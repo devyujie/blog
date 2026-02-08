@@ -60,7 +60,7 @@ jobs:
             echo "No document changes detected, skip commit."
             exit 0
           fi
-          git commit -m "chore(sync): update notion docs"
+          git commit -m "📄update full notion docs"
 
       - name: 推送文档到仓库
         uses: ad-m/github-push-action@v0.8.0
