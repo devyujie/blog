@@ -978,8 +978,8 @@ pre .strong {
 
 @media screen and (max-width: 700px) {
   .back-to-top {
-    right: 16px;
-    bottom: 18px;
+    right: 1.5em;
+    bottom: 3.5em;
   }
 }
 
