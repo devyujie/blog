@@ -1,6 +1,8 @@
 name: Sync Docs
 
 on:
+  schedule:
+    - cron: "0 * * * *"
   # 允许手动push触发
   push:
     branches:
