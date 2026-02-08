@@ -1,17 +1,12 @@
 ---
-categories: Elog-Notion
-tags:
-  - notion
-  - elog
-description: 使用Notion + Hexo部署博客时，在 Notion 上写作的注意事项，以及如何配置Elog使其更好的结合Hexo
 permalink: notion-notice/
 title: Notion-Hexo 的 Elog 配置详解
-cover: /images/de91d8193c1b7d27e88f220af42a71b8.jpg
-date: "2026-02-07 15:07:00"
-updated: "2026-02-07 13:07:00"
+date: '2026-02-07 13:07:00'
+updated: '2026-02-08 14:07:00'
 ---
 
 # 前言
+
 
 在使用 Elog 同步Notion 上的文档时，因为是将富文本向下转成 markdown，会有很多样式损失。这是由于 markdown 样式集合＜ Notion 样式集合。所以在 Notion 上书写时，得按照 markdown 支持的样式进行写作。
 
@@ -19,66 +14,80 @@ updated: "2026-02-07 13:07:00"
 
 如果你不能接受样式损失，可能 markdown 并不适合你，隔壁 [NotionNext](https://github.com/tangly1024/NotionNext) 可能更适合你搭建博客。
 
+
 # Notion 格式注意点
+
 
 ### 不要使用 markdown 不支持的样式/语法
 
+
 例如字体颜色、多级折叠块、书签、数据库、嵌入等。导出为 markdown 都不能正常展示。
+
 
 ### 适当使用 markdown 形式的超链接
 
+
 在文档中使用markdown 形式的超链接可以解决部分路由问题，例如链接Notion文档的超链接会被自动处理为非完整路径，或者手动链接到某个相对路由，可以使用以下方式解决
+
 
 ```plain text
 // 使用[]() markdown 超链接语法
 点击 [下一篇](/notion/deploy-platform) 继续配置部署平台
 ```
 
+
 ### 请勿上传视频、文件到 Notion 文档
+
 
 Elog 还暂不支持将Notion 中的视频、文件暂不支持上传到图床。如果下载到本地，短期内能访问，但因为 notion 的链接具有时效性，一般是一个小时，之后就不能查看了。
 
+
 # Elog 配置详解
 
+
 参考[Elog 文档](https://elog.1874.cool/)，本博客的 Elog 的配置如下：
+
 
 ```javascript
 module.exports = {
   write: {
-    platform: "notion",
+    platform: 'notion',
     notion: {
       token: process.env.NOTION_TOKEN,
       databaseId: process.env.NOTION_DATABASE_ID,
-      filter: { property: "status", select: { equals: "已发布" } },
-    },
+      filter: { property: 'status', select: { equals: '已发布' }}
+    }
   },
   deploy: {
-    platform: "local",
+    platform: 'local',
     local: {
-      outputDir: "./source/_posts",
-      filename: "title",
-      format: "markdown",
+      outputDir: './source/_posts',
+      filename: 'title',
+      format: 'markdown',
       frontMatter: {
         enable: true,
-        include: ["categories", "tags", "title", "date", "updated", "permalink", "cover", "description"],
+        include: ['categories', 'tags', 'title', 'date', 'updated', 'permalink', 'cover', 'description']
       },
-      formatExt: "./format-image.js",
-    },
+      formatExt: './format-image.js',
+    }
   },
   image: {
     enable: true,
-    platform: "local",
+    platform: 'local',
     local: {
-      outputDir: "./source/images",
-      prefixKey: "/images",
-    },
+      outputDir: './source/images',
+      prefixKey: '/images'
+    }
   },
-};
+}
 ```
+
 
 ## Notion 配置
 
+
 ![Untitled.png](/images/1d2d849b405a4b29efc3ab1d7986acfb.png)
+
 
 根据 [Hexo 的 FrontMatter 配置文档](https://hexo.io/zh-cn/docs/front-matter)，和 [Butterfly主题的 FrontMatter 配置文档](https://butterfly.js.org/posts/dc584b87/?highlight=front%20matter#Post-Front-matter)，可以将需要的参数作为 notion 数据库的字段来设置。一般来说，主题的 FrontMatter 为 Hexo在一些基础字段是共用的。
 
@@ -101,7 +110,9 @@ notion: {
 
 ## 本地配置
 
+
 ![Untitled.png](/images/d37326b216f72c5ff40c28c6f8e5d111.png)
+
 
 ```javascript
 local: {
@@ -125,10 +136,12 @@ local: {
 
 ### format-image.js
 
+
 该文档插件的作用就是将 notion 文档最上面的`封面图 cover`，也下载到本地，并替换为本地图片链接
 
+
 ```javascript
-const { matterMarkdownAdapter } = require("@elog/cli");
+const { matterMarkdownAdapter } = require('@elog/cli')
 
 /**
  * 自定义文档插件
@@ -137,12 +150,12 @@ const { matterMarkdownAdapter } = require("@elog/cli");
  * @return {Promise<DocDetail>} 返回处理后的文档对象
  */
 const format = async (doc, imageClient) => {
-  const cover = doc.properties.cover;
-  if (imageClient) {
+  const cover = doc.properties.cover
+  if (imageClient)  {
     // 只有启用图床平台image.enable=true时，imageClient才能用，否则请自行实现图片上传
-    const url = await imageClient.uploadImageFromUrl(cover, doc);
+    const url = await imageClient.uploadImageFromUrl(cover, doc)
     // cover链接替换为本地图片
-    doc.properties.cover = url;
+    doc.properties.cover = url
   }
   // 将文档内容格式化为带有 Front Matter 的 markdown
   doc.body = matterMarkdownAdapter(doc);
@@ -156,7 +169,9 @@ module.exports = {
 };
 ```
 
+
 ## 图床配置
+
 
 ```javascript
 local: {
@@ -169,3 +184,4 @@ local: {
 - `prefixKey=/images`表示图片的统一前缀为`/images`，因为 Hexo 会将`source/images`文件夹视为[静态资源根目录](https://hexo.io/zh-cn/docs/asset-folders)，统一将图片放在这里，并指定图片前缀，Hexo 才能找到此图片
 
 ## 更多 Elog 配置详情，请阅读 [Elog 文档](https://elog.1874.cool/)
+
