@@ -37,6 +37,7 @@ jobs:
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
         run: |
           npm run sync
+          git status --short
 
       - name: 配置Git用户名邮箱
         run: |
@@ -45,9 +46,12 @@ jobs:
 
       - name: 提交拉取的文档到GitHub仓库
         run: |
-          echo `date +"%Y-%m-%d %H:%M:%S"` begin > time.txt
-          git add .
-          git commit -m "Refresh elog.cache.json" -a
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No document changes detected, skip commit."
+            exit 0
+          fi
+          git commit -m "chore(sync): update notion docs"
 
       - name: 推送文档到仓库
         uses: ad-m/github-push-action@master
