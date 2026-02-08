@@ -494,8 +494,13 @@ table tbody td :last-child {
   font-size: 2em;
 }
 
+a {
+  word-break: break-all;
+}
+
 .post-content a {
   color: #9e1900;
+  word-break: break-all;
 }
 .post-content a:hover {
   color: #9e1900;
