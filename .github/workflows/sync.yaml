@@ -2,34 +2,43 @@ name: Sync Docs
 
 on:
   schedule:
-    - cron: "0 * * * *"
+    - cron: "0 0 * * *"
   workflow_dispatch:
-  # 允许手动push触发
-  push:
-    branches:
-      - master
-  # 允许外部仓库事件触发
   repository_dispatch:
     types:
       - deploy
 
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-docs
+  cancel-in-progress: true
+
 jobs:
   build:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Shanghai
 
     steps:
       - name: 检查分支
-        uses: actions/checkout@master
+        uses: actions/checkout@v4
 
       - name: 安装node环境
-        uses: actions/setup-node@master
+        uses: actions/setup-node@v4
         with:
-          node-version: "16.x"
+          node-version: "20.x"
+          cache: npm
 
       - name: 安装依赖
         run: |
-          export TZ='Asia/Shanghai'
-          npm install --prod
+          npm ci --omit=dev
+
+      - name: 清理旧文档（全量模式）
+        run: |
+          npm run elog:clean
 
       - name: 拉取文档
         env:
@@ -54,6 +63,6 @@ jobs:
           git commit -m "chore(sync): update notion docs"
 
       - name: 推送文档到仓库
-        uses: ad-m/github-push-action@master
+        uses: ad-m/github-push-action@v0.8.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
