@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "server": "hexo clean && hexo server",
+    "sync:local": "elog sync -e .elog.env",
     "build": "hexo generate",
     "clean": "hexo clean",
     "deploy": "hexo deploy",
-    "server": "hexo clean && hexo server",
-    "sync:local": "elog sync -e .elog.env",
     "elog:init": "elog init",
     "sync": "elog sync --disable-cache",
     "elog:clean": "elog clean"

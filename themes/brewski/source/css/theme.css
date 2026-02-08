@@ -2,6 +2,21 @@
   --site-header-height: 4rem;
 }
 
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a,
+button,
+input,
+textarea,
+select,
+label,
+summary,
+[role="button"] {
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
   color: #222831;
   font-size: calc(110% + 0.1vw);
