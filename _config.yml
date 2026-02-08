@@ -1,105 +1,41 @@
-# Hexo Configuration
-## Docs: https://hexo.io/docs/configuration.html
-## Source: https://github.com/hexojs/hexo/
+title: "0x5E" # 网站标题
+description: 0x5E 的个人博客 # 网站描述
+keywords: ["0x5E", blog, hexo, 前端, 技术博客] # SEO 关键词
+language: zh-CN # 语言
+timezone: Asia/Shanghai # 时区
+author: "0x5E" # 作者
 
-# Site
-title: Notion-Hexo
-subtitle: 'Notion + Elog + Hexo + GitHub Actions + Vercel 博客解决方案'
-description: 'Notion + Elog + Hexo + GitHub Actions + Vercel 博客解决方案'
-keywords:
-author: 1874
-language: zh-CN
-timezone: Asia/Shanghai
+url: https://bianyujie.cn # 你的站点地址（请保持和线上域名一致）
+root: / # 子目录部署时改成 /子目录/
 
-# URL
-## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: https://notion-hexo.vercel.app
-permalink: :title/
-permalink_defaults:
-pretty_urls:
-  trailing_index: false # Set to false to remove trailing 'index.html' from permalinks
-  trailing_html: false # Set to false to remove trailing '.html' from permalinks
+permalink: :title/ # 设置文章固定链接格式，这里为文章标题
+permalink_defaults: # 固定链接的默认参数（如需特定设置可在此添加）
 
-# Directory
-source_dir: source
-public_dir: public
-tag_dir: tags
-archive_dir: archives
-category_dir: categories
-code_dir: downloads/code
-i18n_dir: :lang
-skip_render:
+pretty_urls: # 美化 URL 配置
+  trailing_index: true # 结尾是否保留 index.html，true 表示保留
+  trailing_html: false # 结尾是否保留 .html 后缀，false 表示不保留
 
-# Writing
-new_post_name: :title.md # File name of new posts
-default_layout: post
-titlecase: false # Transform title into titlecase
-external_link:
-  enable: true # Open external links in new tab
-  field: site # Apply to the whole site
-  exclude: ''
-filename_case: 0
-render_drafts: false
-post_asset_folder: false
-relative_link: false
-future: true
-highlight:
-  enable: true
-  line_number: true
-  auto_detect: false
-  tab_replace: ''
-  wrap: true
-  hljs: false
-prismjs:
-  enable: false
-  preprocess: true
-  line_number: true
-  tab_replace: ''
+theme: brewski # 使用的主题
 
-# Home page setting
-# path: Root path for your blogs index page. (default = '')
-# per_page: Posts displayed per page. (0 = disable pagination)
-# order_by: Posts order. (Order by date descending by default)
+pagination_dir: page # 分页目录，如 page/2
+
 index_generator:
-  path: ''
-  per_page: 10
-  order_by: -date
+  path: "" # 首页路径
+  per_page: 10 # 首页每页显示文章数
+  order_by: -date # 首页文章排序规则（-date 表示倒序，最新的文章排在前面）
 
-# Category & Tag
-default_category: uncategorized
-category_map:
-tag_map:
+archive_generator:
+  per_page: 50 # 归档每页显示文章数
+  yearly: true # 按年份归档
+  monthly: false # 按月份归档
 
-# Metadata elements
-## https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta
-meta_generator: true
+feed:
+  type: rss2 # 订阅源类型，这里使用 RSS2 格式
+  path: rss.xml # 生成的订阅源文件路径
+  limit: 20 # 订阅源文章数限制，最多显示 20 篇
+  content: true # 是否在订阅源中包含全文内容（true 为包含）
 
-# Date / Time format
-## Hexo uses Moment.js to parse and display date
-## You can customize the date format as defined in
-## http://momentjs.com/docs/#/displaying/format/
-date_format: YYYY-MM-DD
-time_format: HH:mm:ss
-## updated_option supports 'mtime', 'date', 'empty'
-updated_option: 'mtime'
-
-# Pagination
-## Set per_page to 0 to disable pagination
-per_page: 10
-pagination_dir: page
-
-# Include / Exclude file(s)
-## include:/exclude: options only apply to the 'source/' folder
-include:
-exclude:
-ignore:
-
-# Extensions
-## Plugins: https://hexo.io/plugins/
-## Themes: https://hexo.io/themes/
-theme: butterfly
-
-# Deployment
-## Docs: https://hexo.io/docs/one-command-deployment
-deploy:
-  type: ''
+sitemap: # 站点地图配置
+  path: sitemap.xml # 生成的站点地图文件路径
+  tags: true # 是否包含标签页面
+  categories: true # 是否包含分类页面
