@@ -1,0 +1,23 @@
+doctype
+html(lang=config.language)
+    head
+        include head.pug
+    body
+        header.site-header
+            .wrap.header-inner
+                h1.branding
+                    a(href=url_for())
+                        if theme.logo
+                            img.logo-image(src=url_for(theme.logo), alt='')
+                        else
+                            = config.title
+                include nav.pug
+        .wrap
+            main.container
+                block container
+            footer
+                block pagination
+                block copyright
+        button.back-to-top#back-to-top(type='button', aria-label='返回顶部')
+            | <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16"><path d="m7.247 4.86-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/></svg>
+        include scripts.pug

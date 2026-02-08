@@ -1,0 +1,7 @@
+if theme.utterances && theme.utterances.enable && theme.utterances.repo
+    #utterances-container(
+        data-repo=theme.utterances.repo
+        data-issue-term=(theme.utterances.issue_term || 'pathname')
+        data-theme=(theme.utterances.theme || 'github-light')
+        data-label=(theme.utterances.label || '')
+    )

@@ -1,0 +1,18 @@
+extends partial/layout.pug
+
+block site_title
+    != '归档 • ' + config.title
+
+block description
+    meta(name='description', content='归档 - ' + config.title)
+
+block container
+    include mixins/post.pug
+    +postList()
+
+block pagination
+    include mixins/paginator.pug
+    +home()
+
+block copyright
+    include partial/copyright.pug

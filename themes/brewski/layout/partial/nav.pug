@@ -1,0 +1,18 @@
+ul.nav.nav-list
+    each value, key in theme.menu
+        li.nav-list-item
+            - if (!value) return null
+            - var re = /^(http|https):\/\/*/gi;
+            - var tar = re.test(value) ? "_blank" : "_self"
+            - var path = value.charAt(0) === '/' ? value : ('/' + value)
+            - var pagePath = (page && page.path ? ('/' + page.path) : '/')
+            - var isActive = false
+            - if (path === '/') {
+            -   isActive = is_home()
+            - } else if (path.indexOf('/archives') === 0) {
+            -   isActive = is_archive()
+            - } else {
+            -   isActive = pagePath.indexOf(path) === 0
+            - }
+            a.nav-list-link(href=url_for(value) target=tar class=isActive ? 'is-active' : '')
+                != key.toUpperCase()

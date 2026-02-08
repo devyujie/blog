@@ -1,0 +1,22 @@
+extends partial/layout.pug
+
+block site_title
+    != page.title + ' • ' + config.title
+
+block description
+    - var desc = page.desc || page.title + ' - ' + config.title;
+    meta(name='description', content=desc)
+
+block container
+    .reading-progress
+        .reading-progress-bar#reading-progress-bar
+    include mixins/post.pug
+    +post(page)
+
+block pagination
+    include mixins/paginator.pug
+    +post()
+    include partial/comment.pug
+
+block copyright
+    include partial/copyright.pug

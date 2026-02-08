@@ -1,0 +1,207 @@
+//- Analytics tracking
+if theme.google_analytics
+    script.
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', '#{theme.google_analytics}']);
+        _gaq.push(['_trackPageview']);
+
+        (function () {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+script.
+    var __readingProgressHandler = null
+
+    function scrollToTop(duration) {
+        var start = window.scrollY || document.documentElement.scrollTop || 0
+        var startTime = null
+
+        var step = function(timestamp) {
+            if (!startTime) startTime = timestamp
+            var progress = Math.min((timestamp - startTime) / duration, 1)
+            var eased = 1 - Math.pow(1 - progress, 3)
+            window.scrollTo(0, Math.floor(start * (1 - eased)))
+            if (progress < 1) {
+                window.requestAnimationFrame(step)
+            }
+        }
+
+        window.requestAnimationFrame(step)
+    }
+
+    function initBackToTop() {
+        var button = document.getElementById('back-to-top')
+        if (!button) return
+
+        if (button.__backToTopBound && typeof button.__toggleBackToTop === 'function') {
+            button.__toggleBackToTop()
+            return
+        }
+
+        button.__toggleBackToTop = function() {
+            if (window.scrollY > 300) {
+                button.classList.add('show')
+            } else {
+                button.classList.remove('show')
+            }
+        }
+
+        window.addEventListener('scroll', button.__toggleBackToTop, { passive: true })
+        button.addEventListener('click', function() {
+            scrollToTop(700)
+        })
+
+        button.__backToTopBound = true
+        button.__toggleBackToTop()
+    }
+
+    function initLogoScrollTop() {
+        var logoLink = document.querySelector('.site-header .branding a')
+        if (!logoLink || logoLink.__logoTopBound) return
+
+        logoLink.addEventListener('click', function(event) {
+            if (event.defaultPrevented) return
+            if (event.button !== 0) return
+            if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+
+            event.preventDefault()
+            window.scrollTo(0, 0)
+            window.location.href = logoLink.getAttribute('href') || '/'
+        })
+
+        logoLink.__logoTopBound = true
+    }
+
+    function initUtterances() {
+        var container = document.getElementById('utterances-container')
+        if (!container) return
+
+        var repo = container.getAttribute('data-repo')
+        if (!repo) return
+
+        container.innerHTML = ''
+
+        var script = document.createElement('script')
+        script.src = 'https://utteranc.es/client.js'
+        script.async = true
+        script.crossOrigin = 'anonymous'
+        script.setAttribute('repo', repo)
+        script.setAttribute('issue-term', container.getAttribute('data-issue-term') || 'pathname')
+        script.setAttribute('theme', container.getAttribute('data-theme') || 'github-light')
+
+        var label = container.getAttribute('data-label')
+        if (label) {
+            script.setAttribute('label', label)
+        }
+
+        container.appendChild(script)
+    }
+
+    function initReadingProgress() {
+        if (__readingProgressHandler) {
+            window.removeEventListener('scroll', __readingProgressHandler)
+            __readingProgressHandler = null
+        }
+
+        var progressBar = document.getElementById('reading-progress-bar')
+        if (!progressBar) return
+
+        __readingProgressHandler = function() {
+            var scrollTop = window.scrollY || document.documentElement.scrollTop || 0
+            var height = document.documentElement.scrollHeight - window.innerHeight
+            var progress = height > 0 ? Math.min((scrollTop / height) * 100, 100) : 0
+            progressBar.style.width = progress + '%'
+        }
+
+        window.addEventListener('scroll', __readingProgressHandler, { passive: true })
+        __readingProgressHandler()
+    }
+
+    function ensureScriptOnce(id, src) {
+        return new Promise(function(resolve, reject) {
+            var existed = document.getElementById(id)
+            if (existed) {
+                if (existed.getAttribute('data-loaded') === '1') {
+                    resolve()
+                    return
+                }
+                existed.addEventListener('load', function() { resolve() }, { once: true })
+                existed.addEventListener('error', reject, { once: true })
+                return
+            }
+
+            var script = document.createElement('script')
+            script.id = id
+            script.src = src
+            script.defer = true
+            script.addEventListener('load', function() {
+                script.setAttribute('data-loaded', '1')
+                resolve()
+            }, { once: true })
+            script.addEventListener('error', reject, { once: true })
+            document.head.appendChild(script)
+        })
+    }
+
+    function initImagePreview() {
+        var images = document.querySelectorAll('.post-content img')
+        if (!images || !images.length) return
+
+        Array.prototype.forEach.call(images, function(image) {
+            image.classList.add('previewable-image')
+            image.style.cursor = 'zoom-in'
+        })
+
+        var applyMediumZoom = function() {
+            if (!window.mediumZoom) return
+
+            if (!window.__mediumZoomInstance) {
+                window.__mediumZoomInstance = window.mediumZoom('.post-content img.previewable-image', {
+                    margin: 24,
+                    background: 'rgba(0, 0, 0, 0.9)',
+                    scrollOffset: 40
+                })
+
+                window.__mediumZoomInstance.on('open', function() {
+                    document.body.classList.add('zoom-preview-open')
+                })
+
+                window.__mediumZoomInstance.on('closed', function() {
+                    document.body.classList.remove('zoom-preview-open')
+                })
+
+                return
+            }
+
+            if (typeof window.__mediumZoomInstance.detach === 'function') {
+                window.__mediumZoomInstance.detach()
+            }
+
+            window.__mediumZoomInstance.attach(document.querySelectorAll('.post-content img.previewable-image'))
+        }
+
+        if (window.mediumZoom) {
+            applyMediumZoom()
+            return
+        }
+
+        if (window.__mediumZoomLoading) return
+        window.__mediumZoomLoading = true
+
+        ensureScriptOnce('medium-zoom-script', 'https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js').then(function() {
+            applyMediumZoom()
+        }).catch(function() {
+        }).finally(function() {
+            window.__mediumZoomLoading = false
+        })
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        initBackToTop()
+        initLogoScrollTop()
+        initUtterances()
+        initReadingProgress()
+        initImagePreview()
+    })

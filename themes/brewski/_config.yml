@@ -1,0 +1,21 @@
+name: "brewski" # 主题名称
+
+menu: # 菜单配置
+  首页: / # 首页链接
+  归档: /archives # 归档页面链接
+  关于: /about # 关于页面链接
+
+favicon: /favicon.svg # 网站 favicon 图标路径
+logo: /logo.svg # 网站 logo 图标路径
+
+copyright: # 版权信息
+  since: 2026 # 博客起始年份
+  name: "0x5E" # 版权拥有者名称
+  url: https://bianyujie.cn # 版权拥有者链接
+
+utterances: # Utterances 评论系统配置
+  enable: true # 是否启用 Utterances
+  repo: devyujie/blog-commnts # GitHub 仓库 (格式: 用户名/仓库名)
+  issue_term: pathname # 用于定位评论线程的参数, 可为 pathname、url、title 等
+  theme: github-light # 评论框主题, 可选 github-light、github-dark 等
+

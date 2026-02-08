@@ -1,0 +1,32 @@
+meta(charset='utf-8')
+meta(name='X-UA-Compatible', content='IE=edge')
+meta(name='viewport', content='width=device-width, initial-scale=1')
+meta(name="robots", content="index, follow")
+meta(name='author', content=config.author)
+if config.keywords
+    meta(name='keywords', content=Array.isArray(config.keywords) ? config.keywords.join(', ') : config.keywords)
+
+title
+    block site_title
+        = config.title
+
+block description
+    meta(name='description', content=config.description ? config.description : __('meta_description'))
+
+meta(property='og:type', content='website')
+meta(property='og:site_name', content=config.title)
+meta(property='og:title', content=page.title ? page.title + ' • ' + config.title : config.title)
+meta(property='og:description', content=page.desc || config.description || __('meta_description'))
+meta(property='og:url', content=page.permalink || (config.url ? config.url + url_for(page.path || '') : ''))
+meta(property='og:locale', content='zh_CN')
+
+if page && page.date
+    meta(property='article:published_time', content=full_date(page.date, 'YYYY-MM-DD[T]HH:mm:ssZ'))
+if page && page.updated
+    meta(property='article:modified_time', content=full_date(page.updated, 'YYYY-MM-DD[T]HH:mm:ssZ'))
+
+
+link(rel='icon', href=url_for(theme.favicon))
+link(rel='stylesheet', href='https://unpkg.com/nanoreset@3.0.1/nanoreset.min.css')
+link(rel='stylesheet', href=url_for('css/theme.css'))
+link(rel='alternate', type='application/rss+xml', title=config.title + ' RSS Feed', href=url_for('rss.xml'))
