@@ -394,8 +394,16 @@ table tbody td :last-child {
 }
 .archive .post-time,
 .archive .post-title-link {
-  font-size: 1rem;
+  font-size: 1.2rem;
   color: #222831;
+  max-width: 80%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
 }
 .archive .post-title-link:hover {
   border-bottom: 0;
@@ -1048,7 +1056,7 @@ pre .strong {
   .archive .post-item {
     flex-direction: column;
     align-items: flex-start;
-    margin: 0.2em 0 0.7em;
+    margin: 0.2em 0 1.2em;
   }
   footer .copyright {
     margin: 3em 0 1.7em;
@@ -1059,5 +1067,24 @@ pre .strong {
   .highlight .code pre {
     padding: 1.5em 1.4em 1.2em;
     position: relative;
+  }
+  .archive .post-title-link {
+    font-size: 1.5rem;
+    max-width: 100%;
+    overflow: visible;
+    text-overflow: unset;
+    white-space: normal;
+    display: block;
+    -webkit-box-orient: horizontal;
+    -webkit-line-clamp: unset;
+    line-clamp: unset;
+  }
+  .archive .post-info {
+    font-size: 1em;
+    color: #999;
+  }
+  .archive-year {
+    /* 控制年份字体大小在7rem到12rem之间，响应式缩放，最大18vw */
+    font-size: clamp(6rem, 18vw, 11rem);
   }
 }
