@@ -1,6 +1,20 @@
 {
   "docs": [
     {
+      "id": "30172e8a-beb7-8040-a4dc-cf4ba645ec56",
+      "doc_id": "30172e8a-beb7-8040-a4dc-cf4ba645ec56",
+      "updated": 1770546420000,
+      "properties": {
+        "date": "2023-10-11 00:00:00",
+        "permalink": "Set-up-Google-Voice-to-automatically-keep-the-number/",
+        "title": "设置 Google Voice 自动保号",
+        "updated": "2026-02-08 18:27:00"
+      },
+      "realName": "设置 Google Voice 自动保号",
+      "relativePath": "/设置 Google Voice 自动保号.md",
+      "docPath": "./source/_posts"
+    },
+    {
       "id": "30172e8a-beb7-8039-91da-c9ce7660e091",
       "doc_id": "30172e8a-beb7-8039-91da-c9ce7660e091",
       "updated": 1770546540000,
@@ -29,17 +43,17 @@
       "docPath": "./source/_posts"
     },
     {
-      "id": "30172e8a-beb7-8040-a4dc-cf4ba645ec56",
-      "doc_id": "30172e8a-beb7-8040-a4dc-cf4ba645ec56",
-      "updated": 1770546420000,
+      "id": "30172e8a-beb7-80e7-9701-c59fd4c7501c",
+      "doc_id": "30172e8a-beb7-80e7-9701-c59fd4c7501c",
+      "updated": 1770546180000,
       "properties": {
-        "date": "2023-10-11 00:00:00",
-        "permalink": "Set-up-Google-Voice-to-automatically-keep-the-number/",
-        "title": "设置 Google Voice 自动保号",
-        "updated": "2026-02-08 18:27:00"
+        "date": "2023-04-18 00:00:00",
+        "permalink": "Deploying-your-own-ChatGPT/",
+        "title": "部署自己的 ChatGPT",
+        "updated": "2026-02-08 18:23:00"
       },
-      "realName": "设置 Google Voice 自动保号",
-      "relativePath": "/设置 Google Voice 自动保号.md",
+      "realName": "部署自己的 ChatGPT",
+      "relativePath": "/部署自己的 ChatGPT.md",
       "docPath": "./source/_posts"
     },
     {
@@ -54,20 +68,6 @@
       },
       "realName": "美化自己的 GitHub 个人主页",
       "relativePath": "/美化自己的 GitHub 个人主页.md",
-      "docPath": "./source/_posts"
-    },
-    {
-      "id": "30172e8a-beb7-80e7-9701-c59fd4c7501c",
-      "doc_id": "30172e8a-beb7-80e7-9701-c59fd4c7501c",
-      "updated": 1770546180000,
-      "properties": {
-        "date": "2023-04-18 00:00:00",
-        "permalink": "Deploying-your-own-ChatGPT/",
-        "title": "部署自己的 ChatGPT",
-        "updated": "2026-02-08 18:23:00"
-      },
-      "realName": "部署自己的 ChatGPT",
-      "relativePath": "/部署自己的 ChatGPT.md",
       "docPath": "./source/_posts"
     }
   ],
