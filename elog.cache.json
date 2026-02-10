@@ -29,20 +29,6 @@
       "docPath": "./source/_posts"
     },
     {
-      "id": "30072e8a-beb7-81c5-997a-d0d03adfc5eb",
-      "doc_id": "30072e8a-beb7-81c5-997a-d0d03adfc5eb",
-      "updated": 1770546240000,
-      "properties": {
-        "date": "2026-02-08 00:00:00",
-        "permalink": "Notion-Hexo-Vercel-Blog/",
-        "title": "博客迁移指南（Notion + Hexo + GitHub Actions + Vercel ）",
-        "updated": "2026-02-08 18:24:00"
-      },
-      "realName": "博客迁移指南（Notion + Hexo + GitHub Actions + Vercel ）",
-      "relativePath": "/博客迁移指南（Notion + Hexo + GitHub Actions + Vercel ）.md",
-      "docPath": "./source/_posts"
-    },
-    {
       "id": "30172e8a-beb7-80e7-9701-c59fd4c7501c",
       "doc_id": "30172e8a-beb7-80e7-9701-c59fd4c7501c",
       "updated": 1770546180000,
@@ -68,6 +54,20 @@
       },
       "realName": "美化自己的 GitHub 个人主页",
       "relativePath": "/美化自己的 GitHub 个人主页.md",
+      "docPath": "./source/_posts"
+    },
+    {
+      "id": "30072e8a-beb7-81c5-997a-d0d03adfc5eb",
+      "doc_id": "30072e8a-beb7-81c5-997a-d0d03adfc5eb",
+      "updated": 1770546240000,
+      "properties": {
+        "date": "2026-02-08 00:00:00",
+        "permalink": "Notion-Hexo-Vercel-Blog/",
+        "title": "博客迁移指南（Notion + Hexo + GitHub Actions + Vercel ）",
+        "updated": "2026-02-08 18:24:00"
+      },
+      "realName": "博客迁移指南（Notion + Hexo + GitHub Actions + Vercel ）",
+      "relativePath": "/博客迁移指南（Notion + Hexo + GitHub Actions + Vercel ）.md",
       "docPath": "./source/_posts"
     }
   ],
