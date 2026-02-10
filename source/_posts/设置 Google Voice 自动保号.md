@@ -2,7 +2,7 @@
 date: '2023-10-11 00:00:00'
 permalink: Set-up-Google-Voice-to-automatically-keep-the-number/
 title: 设置 Google Voice 自动保号
-updated: '2026-02-10 13:03:00'
+updated: '2026-02-10 13:10:00'
 ---
 
 今天来讨论Google Voice的保号难题，本文章将通过Google Apps Script以实现自动保号，且极大概率避免账号被封风险。
@@ -14,13 +14,13 @@ updated: '2026-02-10 13:03:00'
 在网页端 [登入 Google Voice](https://voice.google.com/)，进入设置页面，打开`将短信转发到电子邮件地址`，这样以后任何的短信收发都会被同时转发至邮箱内：
 
 
+## 获取互保好友的ID
+
+
 ![bafkreicqjpupce7mevq2inbzxtjht6fyvzer37wn3mmvyv7z7lzeotfl4q.png](/images/3b4e17ea11dda04ad370dfd75944dcd2.png)
 
 
 ![bafkreih2646z23hprnwmztz3yp72tftu56pgow4cdpyxsdckg6xvehxeke.png](/images/28041d16ebe3b7356175652e81778a2a.png)
-
-
-## 获取互保好友的ID
 
 
 去 Google Voice 网页端，随便找一个和你互发短信的号码，复制他的号码，例如这个：
