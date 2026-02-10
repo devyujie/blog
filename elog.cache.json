@@ -1,6 +1,20 @@
 {
   "docs": [
     {
+      "id": "30072e8a-beb7-81c5-997a-d0d03adfc5eb",
+      "doc_id": "30072e8a-beb7-81c5-997a-d0d03adfc5eb",
+      "updated": 1770546240000,
+      "properties": {
+        "date": "2026-02-08 00:00:00",
+        "permalink": "Notion-Hexo-Vercel-Blog/",
+        "title": "博客迁移指南（Notion + Hexo + GitHub Actions + Vercel ）",
+        "updated": "2026-02-08 18:24:00"
+      },
+      "realName": "博客迁移指南（Notion + Hexo + GitHub Actions + Vercel ）",
+      "relativePath": "/博客迁移指南（Notion + Hexo + GitHub Actions + Vercel ）.md",
+      "docPath": "./source/_posts"
+    },
+    {
       "id": "30172e8a-beb7-8039-91da-c9ce7660e091",
       "doc_id": "30172e8a-beb7-8039-91da-c9ce7660e091",
       "updated": 1770546540000,
@@ -12,6 +26,20 @@
       },
       "realName": "无限续杯 Cursor",
       "relativePath": "/无限续杯 Cursor.md",
+      "docPath": "./source/_posts"
+    },
+    {
+      "id": "30172e8a-beb7-80e7-9701-c59fd4c7501c",
+      "doc_id": "30172e8a-beb7-80e7-9701-c59fd4c7501c",
+      "updated": 1770698340000,
+      "properties": {
+        "date": "2023-04-18 00:00:00",
+        "permalink": "Deploying-your-own-ChatGPT/",
+        "title": "部署自己的 ChatGPT",
+        "updated": "2026-02-10 12:39:00"
+      },
+      "realName": "部署自己的 ChatGPT",
+      "relativePath": "/部署自己的 ChatGPT.md",
       "docPath": "./source/_posts"
     },
     {
@@ -31,43 +59,15 @@
     {
       "id": "30172e8a-beb7-8040-a4dc-cf4ba645ec56",
       "doc_id": "30172e8a-beb7-8040-a4dc-cf4ba645ec56",
-      "updated": 1770700200000,
+      "updated": 1770700980000,
       "properties": {
         "date": "2023-10-11 00:00:00",
         "permalink": "Set-up-Google-Voice-to-automatically-keep-the-number/",
         "title": "设置 Google Voice 自动保号",
-        "updated": "2026-02-10 13:10:00"
+        "updated": "2026-02-10 13:23:00"
       },
       "realName": "设置 Google Voice 自动保号",
       "relativePath": "/设置 Google Voice 自动保号.md",
-      "docPath": "./source/_posts"
-    },
-    {
-      "id": "30172e8a-beb7-80e7-9701-c59fd4c7501c",
-      "doc_id": "30172e8a-beb7-80e7-9701-c59fd4c7501c",
-      "updated": 1770698340000,
-      "properties": {
-        "date": "2023-04-18 00:00:00",
-        "permalink": "Deploying-your-own-ChatGPT/",
-        "title": "部署自己的 ChatGPT",
-        "updated": "2026-02-10 12:39:00"
-      },
-      "realName": "部署自己的 ChatGPT",
-      "relativePath": "/部署自己的 ChatGPT.md",
-      "docPath": "./source/_posts"
-    },
-    {
-      "id": "30072e8a-beb7-81c5-997a-d0d03adfc5eb",
-      "doc_id": "30072e8a-beb7-81c5-997a-d0d03adfc5eb",
-      "updated": 1770546240000,
-      "properties": {
-        "date": "2026-02-08 00:00:00",
-        "permalink": "Notion-Hexo-Vercel-Blog/",
-        "title": "博客迁移指南（Notion + Hexo + GitHub Actions + Vercel ）",
-        "updated": "2026-02-08 18:24:00"
-      },
-      "realName": "博客迁移指南（Notion + Hexo + GitHub Actions + Vercel ）",
-      "relativePath": "/博客迁移指南（Notion + Hexo + GitHub Actions + Vercel ）.md",
       "docPath": "./source/_posts"
     }
   ],
@@ -138,7 +138,7 @@
       "object": "page",
       "id": "30172e8a-beb7-8040-a4dc-cf4ba645ec56",
       "created_time": "2026-02-08T10:14:00.000Z",
-      "last_edited_time": "2026-02-10T05:10:00.000Z",
+      "last_edited_time": "2026-02-10T05:23:00.000Z",
       "created_by": {
         "object": "user",
         "id": "7528572e-8991-4e26-876d-41d1ac76f2c1"
@@ -160,7 +160,7 @@
         "date": "2023-10-11 00:00:00",
         "permalink": "Set-up-Google-Voice-to-automatically-keep-the-number/",
         "title": "设置 Google Voice 自动保号",
-        "updated": "2026-02-10 13:10:00"
+        "updated": "2026-02-10 13:23:00"
       },
       "url": "https://www.notion.so/Google-Voice-30172e8abeb78040a4dccf4ba645ec56",
       "public_url": null
