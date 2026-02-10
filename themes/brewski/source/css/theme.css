@@ -359,6 +359,10 @@ table tbody td :last-child {
   padding: 1em 0.4em;
 }
 
+.post .post-content{
+  margin-top: 4em;
+}
+
 .home.post-list .post-content h2:before,
 .home.post-list .post-content h3:before,
 .home.post-list .post-content h4:before,
@@ -1020,6 +1024,9 @@ pre .strong {
 
 /* 适配常见机型移动端样式 */
 @media screen and (max-width: 700px) {
+  .post .post-content{
+    margin-top: 3em;
+  }
   .post-block .post-title {
     font-size: 1.8em;
   }
