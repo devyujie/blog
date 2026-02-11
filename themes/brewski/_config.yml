@@ -13,9 +13,18 @@ copyright: # 版权信息
   name: "0x5E" # 版权拥有者名称
   url: https://bianyujie.cn # 版权拥有者链接
 
-utterances: # Utterances 评论系统配置
-  enable: true # 是否启用 Utterances
+giscus: # Giscus 评论系统配置
+  enable: true # 是否启用 Giscus
   repo: devyujie/blog-commnts # GitHub 仓库 (格式: 用户名/仓库名)
-  issue_term: pathname # 用于定位评论线程的参数, 可为 pathname、url、title 等
-  theme: github-light # 评论框主题, 可选 github-light、github-dark 等
+  repo_id: R_kgDORK04Fg # 仓库 ID
+  category: Announcements # 分类名称
+  category_id: DIC_kwDORK04Fs4C2LoU # 分类 ID
+  mapping: pathname # 用于定位评论线程的参数
+  strict: '0' # 是否严格匹配
+  reactions_enabled: '1' # 是否启用表情
+  emit_metadata: '0' # 是否输出元数据
+  input_position: top # 输入框位置
+  theme: preferred_color_scheme # 主题
+  lang: zh-CN # 语言
+  loading: lazy # 加载方式
 

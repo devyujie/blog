@@ -31,25 +31,38 @@ mixin posts()
 //- Archive Page
 mixin postList()
     .archive
-        - var year = 0;
-        - var change = false;
+        - var groups = [];
+        - var current = null;
         - page.posts.each(function (item) {
             - var itemYear = date(item.date, 'YYYY') - 0;
-            - change = year !== itemYear;
-            - year = change ? itemYear : year;
-            if change
+            - if (!current || current.year !== itemYear) {
+                - current = { year: itemYear, items: [] };
+                - groups.push(current);
+            - }
+            - current.items.push(item);
+        - })
+        - groups.forEach(function (group) {
+            .archive-group
                 h2.archive-year
-                    != year
-            .post-item
-                a.post-title-link(href=url_for(item.path))
-                    +postTitle(item.title)
-                p.post-line
-                +postInfo(item)
+                    != group.year
+                - group.items.forEach(function (item) {
+                    .post-item
+                        a.post-title-link(href=url_for(item.path))
+                            +postTitle(item.title)
+                        p.post-line
+                        +postInfo(item)
+                - })
         - })
 
 //- Post Page
 mixin post(item)
     .post
+        if item.toc !== false
+            nav.post-toc
+                span.post-toc-title 文章目录
+                .post-toc-list-wrap
+                    span.post-toc-indicator
+                    ol.post-toc-list
         article.post-block
             h1.post-title
                 +postTitle(item.title)

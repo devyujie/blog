@@ -29,23 +29,6 @@ body {
   flex-direction: column;
 }
 
-.reading-progress {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 3px;
-  z-index: 1001;
-  background: transparent;
-  transition: opacity 0.18s ease;
-}
-
-.reading-progress-bar {
-  width: 0;
-  height: 100%;
-  background: #9e1900;
-  transition: width 0.1s linear;
-}
 
 ::-webkit-scrollbar {
   width: 7px;
@@ -125,9 +108,12 @@ body.zoom-preview-open .back-to-top {
   transform: translateY(12px);
 }
 
-body.zoom-preview-open .reading-progress {
-  opacity: 0;
+body.zoom-preview-open .post-toc {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(8px);
 }
+
 
 ul {
   margin: 1rem 0;
@@ -317,7 +303,11 @@ table tbody td :last-child {
   color: rgba(34, 40, 49, 0.09);
   font-weight: 800;
   user-select: none;
-  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.archive-group:hover .archive-year {
+  color: rgba(34, 40, 49, 0.18);
 }
 
 .site-header .nav-list-item {
@@ -412,7 +402,7 @@ table tbody td :last-child {
 .archive .post-title-link:hover {
   border-bottom: 0;
   color: #9e1900;
-  text-decoration: underline;
+  /* text-decoration: underline; */
 }
 .archive .post-info {
   font-size: 0.8em;
@@ -452,23 +442,22 @@ table tbody td :last-child {
   margin-bottom: 1em;
 }
 
-.post-content h2 a:before,
-.post-content h3 a:before,
-.post-content h4 a:before,
-.post-content h5 a:before,
-.post-content h6 a:before {
-  content: "#";
+/* inline heading anchors */
+.post-content .header-anchor,
+.post-content .headerlink {
+  display: inline-block;
+  margin-right: 0.35em;
   color: #9e1900;
-  position: absolute;
-  left: -0.8em;
-  top: -0.1em;
-  font-size: 1.1em;
   font-weight: 500;
+  font-size: 0.9em;
+  line-height: 1;
+  text-decoration: none;
 }
-.post-content h4 a:before,
-.post-content h5 a:before,
-.post-content h6 a:before {
-  content: "";
+
+.post-content .header-anchor:hover,
+.post-content .headerlink:hover {
+  color: #801501;
+  text-decoration: none;
 }
 
 .post-content h1,
@@ -1027,6 +1016,9 @@ pre .strong {
   .post .post-content{
     margin-top: 3em;
   }
+  .archive-group:hover .archive-year {
+    color: rgba(34, 40, 49, 0.09);
+  }
   .post-block .post-title {
     font-size: 1.8em;
   }
@@ -1093,5 +1085,186 @@ pre .strong {
   .archive-year {
     /* 控制年份字体大小在7rem到12rem之间，响应式缩放，最大18vw */
     font-size: clamp(6rem, 18vw, 11rem);
+  }
+}
+
+.post-toc {
+  position: fixed;
+  top: calc(var(--site-header-height) + 6.5rem);
+  right: 2.2rem;
+  left: auto;
+  width: 14rem;
+  max-height: calc(100vh - var(--site-header-height) - 2rem);
+  z-index: 900;
+}
+
+.post-toc-title {
+  font-size: 0.85em;
+  color: #6b717b;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  display: none;
+  margin: 0 0 0.4em;
+}
+
+.post-toc-list-wrap {
+  position: relative;
+  margin-top: 0.6em;
+  padding-left: 0.4em;
+}
+
+.post-toc-indicator {
+  display: none;
+}
+
+.post-toc-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: calc(100vh - var(--site-header-height) - 6rem);
+  overflow: auto;
+  scroll-behavior: smooth;
+}
+
+.post-toc-item {
+  margin: 0.1em 0;
+}
+
+.post-toc-link {
+  display: block;
+  padding: 0.12em 0.3em;
+  padding-left: 0.28em;
+  color: #5a616b;
+  font-size: 0.84em;
+  line-height: 1.35;
+  border-radius: 0.32em;
+  position: relative;
+  transition: none;
+}
+
+.post-toc-link:hover {
+  color: #222831;
+  background-color: rgba(158, 25, 0, 0.08);
+}
+
+.post-toc-item.is-active .post-toc-link {
+  color: #222831;
+  font-weight: 600;
+}
+
+.post-toc-item.level-3 .post-toc-link {
+  padding-left: 0.75em;
+  font-size: 0.82em;
+}
+
+.post-toc-item.level-4 .post-toc-link {
+  padding-left: 1.12em;
+  font-size: 0.8em;
+}
+
+@media screen and (min-width: 1201px) {
+  .post-toc-list-wrap {
+    padding: 0.38em 0.25em;
+    border-radius: 1em;
+    background: transparent;
+    border: 1px solid transparent;
+    box-shadow: none;
+    transition: background-color 0.18s ease-out, box-shadow 0.18s ease-out, border-color 0.18s ease-out;
+  }
+
+  .post-toc-link,
+  .post-toc-item.is-active .post-toc-link {
+    color: transparent;
+  }
+
+  .post-toc-link::after {
+    content: "";
+    position: absolute;
+    right: 0.4em;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 2px;
+    width: 1.45rem;
+    background: #d6d9de;
+    border-radius: 999px;
+    opacity: 1;
+    transition: none;
+  }
+
+  .post-toc-item.is-active .post-toc-link::after {
+    background: #9e1900;
+    width: 1.7rem;
+  }
+
+  .post-toc:hover:not(.is-force-collapsed) .post-toc-list-wrap,
+  .post-toc:focus-within:not(.is-force-collapsed) .post-toc-list-wrap {
+    padding: 0.6em 0.7em;
+    background: #fff;
+    border-color: rgba(34, 40, 49, 0.08);
+    box-shadow: 0 16px 32px rgba(34, 40, 49, 0.12);
+  }
+
+  .post-toc:hover:not(.is-force-collapsed) .post-toc-link,
+  .post-toc:focus-within:not(.is-force-collapsed) .post-toc-link {
+    color: #5a616b;
+  }
+
+  .post-toc:hover:not(.is-force-collapsed) .post-toc-item.is-active .post-toc-link,
+  .post-toc:focus-within:not(.is-force-collapsed) .post-toc-item.is-active .post-toc-link {
+    color: #222831;
+  }
+
+  .post-toc:hover:not(.is-force-collapsed) .post-toc-link::after,
+  .post-toc:focus-within:not(.is-force-collapsed) .post-toc-link::after {
+    opacity: 0;
+  }
+
+  .post-toc:not(:hover):not(:focus-within) .post-toc-list,
+  .post-toc.is-force-collapsed .post-toc-list {
+    overflow: hidden;
+  }
+
+  .post-toc.is-force-collapsed .post-toc-link:hover {
+    background-color: transparent;
+  }
+}
+
+.giscus-frame{
+  margin-top: 4em;
+
+}
+
+@media screen and (max-width: 1200px) {
+  .post-toc {
+    position: static;
+    width: auto;
+    max-height: none;
+    margin: 1em 0;
+    box-shadow: none;
+  }
+
+  .post-toc-title {
+    display: block;
+  }
+
+  .post-toc-indicator {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 3px;
+    height: 1.1em;
+    border-radius: 3px;
+    background: #9e1900;
+    transform: translateY(0);
+    transition:
+      transform 0.2s ease,
+      height 0.2s ease,
+      opacity 0.2s ease;
+    opacity: 1;
+  }
+
+  .post-toc-list {
+    max-height: 14em;
   }
 }

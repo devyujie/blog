@@ -12,23 +12,41 @@ if theme.google_analytics
         })();
 
 script.
-    var __readingProgressHandler = null
+    var __scrollHandlers = []
+    var __scrollListenerBound = false
+    var __scrollTicking = false
+    var __scrollToTopFrame = null
+
+    function registerScrollHandler(handler) {
+        if (typeof handler !== 'function') return
+        __scrollHandlers.push(handler)
+        if (__scrollListenerBound) return
+        window.addEventListener('scroll', function() {
+            if (__scrollTicking) return
+            __scrollTicking = true
+            window.requestAnimationFrame(function() {
+                __scrollTicking = false
+                for (var i = 0; i < __scrollHandlers.length; i += 1) {
+                    try {
+                        __scrollHandlers[i]()
+                    } catch (err) {
+                    }
+                }
+            })
+        }, { passive: true })
+        __scrollListenerBound = true
+    }
 
     function scrollToTop(duration) {
         var start = window.scrollY || document.documentElement.scrollTop || 0
-        var startTime = null
-
-        var step = function(timestamp) {
-            if (!startTime) startTime = timestamp
-            var progress = Math.min((timestamp - startTime) / duration, 1)
-            var eased = 1 - Math.pow(1 - progress, 3)
-            window.scrollTo(0, Math.floor(start * (1 - eased)))
-            if (progress < 1) {
-                window.requestAnimationFrame(step)
-            }
+        if (start <= 0) return
+        if (__scrollToTopFrame) {
+            window.cancelAnimationFrame(__scrollToTopFrame)
+            __scrollToTopFrame = null
         }
-
-        window.requestAnimationFrame(step)
+        window.__isProgrammaticScroll = true
+        window.scrollTo(0, 0)
+        window.__isProgrammaticScroll = false
     }
 
     function initBackToTop() {
@@ -48,7 +66,7 @@ script.
             }
         }
 
-        window.addEventListener('scroll', button.__toggleBackToTop, { passive: true })
+        registerScrollHandler(button.__toggleBackToTop)
         button.addEventListener('click', function() {
             scrollToTop(700)
         })
@@ -67,8 +85,18 @@ script.
             if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
 
             event.preventDefault()
-            window.scrollTo(0, 0)
-            window.location.href = logoLink.getAttribute('href') || '/'
+            var href = logoLink.getAttribute('href') || '/'
+            var target = href
+            try {
+                target = new URL(href, window.location.origin).pathname
+            } catch (err) {
+            }
+            var current = window.location.pathname
+            if (current === target) {
+                window.scrollTo(0, 0)
+                return
+            }
+            window.location.href = href
         })
 
         logoLink.__logoTopBound = true
@@ -99,25 +127,6 @@ script.
         container.appendChild(script)
     }
 
-    function initReadingProgress() {
-        if (__readingProgressHandler) {
-            window.removeEventListener('scroll', __readingProgressHandler)
-            __readingProgressHandler = null
-        }
-
-        var progressBar = document.getElementById('reading-progress-bar')
-        if (!progressBar) return
-
-        __readingProgressHandler = function() {
-            var scrollTop = window.scrollY || document.documentElement.scrollTop || 0
-            var height = document.documentElement.scrollHeight - window.innerHeight
-            var progress = height > 0 ? Math.min((scrollTop / height) * 100, 100) : 0
-            progressBar.style.width = progress + '%'
-        }
-
-        window.addEventListener('scroll', __readingProgressHandler, { passive: true })
-        __readingProgressHandler()
-    }
 
     function ensureScriptOnce(id, src) {
         return new Promise(function(resolve, reject) {
@@ -149,9 +158,18 @@ script.
         var images = document.querySelectorAll('.post-content img')
         if (!images || !images.length) return
 
-        Array.prototype.forEach.call(images, function(image) {
+        Array.prototype.forEach.call(images, function(image, index) {
             image.classList.add('previewable-image')
             image.style.cursor = 'zoom-in'
+            if (!image.hasAttribute('loading')) {
+                image.setAttribute('loading', 'lazy')
+            }
+            if (!image.hasAttribute('decoding')) {
+                image.setAttribute('decoding', 'async')
+            }
+            if (index === 0 && !image.hasAttribute('fetchpriority')) {
+                image.setAttribute('fetchpriority', 'high')
+            }
         })
 
         var applyMediumZoom = function() {
@@ -198,10 +216,329 @@ script.
         })
     }
 
+    function initHeadingAnchors() {
+        var content = document.querySelector('.post-content')
+        if (!content) return
+
+        var headings = content.querySelectorAll('h2, h3, h4, h5, h6')
+        if (!headings.length) return
+
+        var usedIds = {}
+        var slugify = function(text) {
+            return text
+                .trim()
+                .toLowerCase()
+                .replace(/\s+/g, '-')
+                .replace(/[^\w\-]/g, '')
+        }
+
+        Array.prototype.forEach.call(headings, function(heading) {
+            if (heading.querySelector('.header-anchor')) return
+
+            var existingLink = heading.querySelector('.headerlink')
+            var text = (heading.textContent || '').trim()
+            if (!text) return
+
+            var id = heading.id
+            if (!id) {
+                var base = slugify(text)
+                if (!base) base = 'section'
+                var candidate = base
+                var count = 1
+                while (document.getElementById(candidate) || usedIds[candidate]) {
+                    count += 1
+                    candidate = base + '-' + count
+                }
+                heading.id = candidate
+                id = candidate
+            }
+
+            usedIds[id] = true
+
+            if (existingLink) {
+                var linkText = (existingLink.textContent || '').trim()
+                if (!linkText || linkText === '#') {
+                    existingLink.textContent = '#'
+                    existingLink.classList.add('header-anchor')
+                    existingLink.setAttribute('aria-label', '跳转到 ' + text)
+                    existingLink.href = '#' + id
+                    return
+                }
+            }
+
+            var anchor = document.createElement('a')
+            anchor.className = 'header-anchor'
+            anchor.href = '#' + id
+            anchor.setAttribute('aria-label', '跳转到 ' + text)
+            anchor.textContent = '#'
+            heading.insertBefore(anchor, heading.firstChild)
+        })
+    }
+
+    function initPostToc() {
+        var toc = document.querySelector('.post-toc')
+        if (!toc) return
+
+        var listWrap = toc.querySelector('.post-toc-list-wrap')
+        var indicator = toc.querySelector('.post-toc-indicator')
+        var list = toc.querySelector('.post-toc-list')
+        var content = document.querySelector('.post-content')
+        if (!listWrap || !list || !content) return
+
+        var headings = content.querySelectorAll('h2, h3, h4')
+        if (!headings.length) {
+            toc.style.display = 'none'
+            return
+        }
+
+        list.innerHTML = ''
+
+        var usedIds = {}
+        var items = []
+
+        var slugify = function(text) {
+            return text
+                .trim()
+                .toLowerCase()
+                .replace(/\s+/g, '-')
+                .replace(/[^\w\-]/g, '')
+        }
+
+        Array.prototype.forEach.call(headings, function(heading) {
+            var text = (heading.textContent || '').trim()
+            if (!text) return
+
+            var id = heading.id
+            if (!id) {
+                var base = slugify(text)
+                if (!base) base = 'section'
+                var candidate = base
+                var count = 1
+                while (document.getElementById(candidate) || usedIds[candidate]) {
+                    count += 1
+                    candidate = base + '-' + count
+                }
+                heading.id = candidate
+                id = candidate
+            }
+
+            usedIds[id] = true
+
+            var level = parseInt(heading.tagName.replace('H', ''), 10) || 2
+            var li = document.createElement('li')
+            li.className = 'post-toc-item level-' + level
+
+            var link = document.createElement('a')
+            link.className = 'post-toc-link'
+            link.href = '#' + id
+            link.textContent = text
+            link.setAttribute('data-toc-target', id)
+
+            li.appendChild(link)
+            list.appendChild(li)
+
+            items.push({
+                id: id,
+                li: li,
+                link: link,
+                heading: heading
+            })
+        })
+
+        if (!items.length) {
+            toc.style.display = 'none'
+            return
+        }
+
+        var prefersReducedMotion = false
+        if (window.matchMedia) {
+            prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        }
+
+        var getHeaderOffset = function() {
+            var header = document.querySelector('.site-header')
+            return header ? header.getBoundingClientRect().height : 0
+        }
+
+        var smoothScrollTo = function(targetY, duration) {
+            var start = window.scrollY || document.documentElement.scrollTop || 0
+            var distance = targetY - start
+            if (Math.abs(distance) < 1) return
+
+            var startTime = null
+            var step = function(timestamp) {
+                if (!startTime) startTime = timestamp
+                var progress = Math.min((timestamp - startTime) / duration, 1)
+                var eased = 1 - Math.pow(1 - progress, 3)
+                window.scrollTo(0, Math.round(start + distance * eased))
+                if (progress < 1) {
+                    window.requestAnimationFrame(step)
+                }
+            }
+
+            window.requestAnimationFrame(step)
+        }
+
+        var alignToHash = function() {
+            if (!window.location || !window.location.hash) return
+
+            var rawId = window.location.hash.slice(1)
+            if (!rawId) return
+
+            var id = rawId
+            try {
+                id = decodeURIComponent(rawId)
+            } catch (err) {
+            }
+
+            var targetEl = document.getElementById(id)
+            if (!targetEl) return
+
+            var headerOffset = getHeaderOffset()
+            var rect = targetEl.getBoundingClientRect()
+            var target = rect.top + (window.scrollY || document.documentElement.scrollTop || 0) - headerOffset
+            if (target < 0) target = 0
+            window.scrollTo(0, Math.round(target))
+        }
+
+        var headingTops = []
+        var refreshHeadingTops = function() {
+            headingTops = []
+            var scrollTop = window.scrollY || document.documentElement.scrollTop || 0
+            for (var i = 0; i < items.length; i += 1) {
+                var rect = items[i].heading.getBoundingClientRect()
+                headingTops.push(rect.top + scrollTop)
+            }
+        }
+
+        var updateIndicator = function(activeItem) {
+            if (!indicator || !activeItem) return
+            var offset = activeItem.li.offsetTop - list.scrollTop
+            indicator.style.transform = 'translateY(' + offset + 'px)'
+            indicator.style.height = Math.max(activeItem.li.offsetHeight - 4, 10) + 'px'
+        }
+
+        var ensureVisible = function(activeItem) {
+            var top = activeItem.li.offsetTop
+            var bottom = top + activeItem.li.offsetHeight
+            if (top < list.scrollTop + 6) {
+                list.scrollTop = Math.max(top - 6, 0)
+                return
+            }
+            if (bottom > list.scrollTop + list.clientHeight - 6) {
+                list.scrollTop = bottom - list.clientHeight + 6
+            }
+        }
+
+        var updateActive = function() {
+            if (window.__isProgrammaticScroll) return
+            if (!headingTops.length) {
+                refreshHeadingTops()
+            }
+            var scrollTop = window.scrollY || document.documentElement.scrollTop || 0
+            var threshold = scrollTop + 140
+            var activeIndex = 0
+            for (var i = 0; i < headingTops.length; i += 1) {
+                if (headingTops[i] <= threshold) {
+                    activeIndex = i
+                } else {
+                    break
+                }
+            }
+            var active = items[activeIndex] || items[0]
+
+            items.forEach(function(item) {
+                item.li.classList.toggle('is-active', item === active)
+            })
+
+            ensureVisible(active)
+            updateIndicator(active)
+        }
+
+        refreshHeadingTops()
+        registerScrollHandler(updateActive)
+        window.addEventListener('resize', function() {
+            refreshHeadingTops()
+            updateActive()
+        })
+        window.addEventListener('load', function() {
+            refreshHeadingTops()
+            updateActive()
+            alignToHash()
+        })
+        window.addEventListener('hashchange', alignToHash)
+        updateActive()
+        window.setTimeout(alignToHash, 0)
+        window.setTimeout(alignToHash, 120)
+
+        var contentImages = content.querySelectorAll('img')
+        if (contentImages && contentImages.length) {
+            Array.prototype.forEach.call(contentImages, function(image) {
+                if (image.complete) return
+                image.addEventListener('load', function() {
+                    refreshHeadingTops()
+                    updateActive()
+                }, { once: true })
+                image.addEventListener('error', function() {
+                    refreshHeadingTops()
+                    updateActive()
+                }, { once: true })
+            })
+        }
+
+        var releaseForceCollapse = function() {
+            toc.classList.remove('is-force-collapsed')
+        }
+
+        toc.addEventListener('mouseleave', releaseForceCollapse)
+
+        items.forEach(function(item) {
+            item.link.addEventListener('click', function(event) {
+                if (event.defaultPrevented) return
+                if (event.button !== 0) return
+                if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+
+                event.preventDefault()
+
+                var headerOffset = getHeaderOffset()
+                var rect = item.heading.getBoundingClientRect()
+                var target = rect.top + (window.scrollY || document.documentElement.scrollTop || 0) - headerOffset
+                if (target < 0) target = 0
+
+                if (prefersReducedMotion) {
+                    window.scrollTo(0, target)
+                } else {
+                    smoothScrollTo(target, 450)
+                }
+
+                var keepOpen = false
+                if (toc.matches) {
+                    keepOpen = toc.matches(':hover') || toc.matches(':focus-within')
+                }
+                if (!keepOpen) {
+                    toc.classList.add('is-force-collapsed')
+                } else {
+                    toc.classList.remove('is-force-collapsed')
+                }
+
+                if (typeof event.detail === 'number' ? event.detail > 0 : true) {
+                    if (item.link && typeof item.link.blur === 'function') {
+                        item.link.blur()
+                    }
+                }
+
+                if (item.id) {
+                    window.history.pushState(null, '', '#' + item.id)
+                }
+            })
+        })
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         initBackToTop()
         initLogoScrollTop()
         initUtterances()
-        initReadingProgress()
         initImagePreview()
+        initPostToc()
+        initHeadingAnchors()
     })
