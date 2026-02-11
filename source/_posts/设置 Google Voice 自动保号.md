@@ -2,7 +2,7 @@
 date: '2023-10-11 00:00:00'
 permalink: Set-up-Google-Voice-to-automatically-keep-the-number/
 title: 设置 Google Voice 自动保号
-updated: '2026-02-10 13:47:00'
+updated: '2026-02-11 13:33:00'
 ---
 > 今天来讨论Google Voice的保号难题，本文章将通过Google Apps Script以实现自动保号，且极大概率避免账号被封风险。
 
@@ -70,6 +70,9 @@ function autoReplier() {
 
 
 更改触发器时间类型，可以改为`周定时器`（每周发一次短信）或者`月定时器`（每月发一次短信），然后**保存**：
+
+
+### 测试测试哈哈哈哈哈哈哈哈哈哈哈哈
 
 
 ![bafkreihmiupalfxfwlkjoj6txzog4sbpga5dusiqhnxn5bcuooyds33zpe.png](/images/40ee7428d8c28badab63eb1b8ca88d7a.png)
