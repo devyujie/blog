@@ -2,7 +2,7 @@
 date: '2023-10-11 00:00:00'
 permalink: Set-up-Google-Voice-to-automatically-keep-the-number/
 title: 设置 Google Voice 自动保号
-updated: '2026-02-11 13:35:00'
+updated: '2026-02-12 11:25:00'
 ---
 > 今天来讨论Google Voice的保号难题，本文章将通过Google Apps Script以实现自动保号，且极大概率避免账号被封风险。
 
