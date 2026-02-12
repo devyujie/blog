@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "server": "hexo clean && hexo server",
-    "sync:local": "elog sync -e .elog.env",
+    "sync:local": "elog sync --disable-cache -e .elog.env",
     "build": "hexo generate",
     "clean": "hexo clean",
     "deploy": "hexo deploy",
