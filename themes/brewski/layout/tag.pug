@@ -1,0 +1,25 @@
+extends partial/layout.pug
+
+block site_title
+    - var tagTitle = (page.tag && page.tag.name) ? page.tag.name : (page.tag || page.title || '')
+    != tagTitle + ' • ' + config.title
+
+block description
+    - var tagTitle = (page.tag && page.tag.name) ? page.tag.name : (page.tag || page.title || '')
+    meta(name='description', content=tagTitle + ' - ' + config.title)
+
+block container
+    - var tagTitle = (page.tag && page.tag.name) ? page.tag.name : (page.tag || page.title || '')
+    .archive.tag-archive
+        .archive-group
+            h2.archive-year
+                != tagTitle
+            include mixins/post.pug
+            +postListFlat(page.posts, false)
+
+block pagination
+    include mixins/paginator.pug
+    +home()
+
+block copyright
+    include partial/copyright.pug

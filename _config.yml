@@ -29,6 +29,10 @@ archive_generator:
   yearly: true # 按年份归档
   monthly: false # 按月份归档
 
+tag_generator:
+  per_page: 50 # 标签页每页显示文章数
+  order_by: -date # 按时间倒序
+
 feed:
   type: rss2 # 订阅源类型，这里使用 RSS2 格式
   path: rss.xml # 生成的订阅源文件路径

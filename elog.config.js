@@ -16,7 +16,7 @@ module.exports = {
       catalog: false,
       frontMatter: {
         enable: true,
-        include: ['title', 'date', 'updated', 'permalink'],
+        include: ['title', 'date', 'updated', 'permalink', 'tags'],
         timeFormat: true,
       },
     }

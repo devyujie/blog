@@ -2,6 +2,11 @@ mixin postInfo(item)
     .post-info
         a
         != full_date(item.date, config.datetime_format || 'YYYY-MM-DD')
+        if item.tags && item.tags.length && (is_home() || is_post())
+            span.post-tags
+                - item.tags.each(function(tag) {
+                    a.post-tag(href=url_for(tag.path))= '#' + tag.name
+                - })
         if item.from && (is_home() || is_post())
             a.post-from(href=item.from, target='_blank', title=item.from)
                 != __('translate_original')
@@ -53,6 +58,24 @@ mixin postList()
                         +postInfo(item)
                 - })
         - })
+
+//- Tag Page (flat list)
+mixin postListFlatItems(posts)
+    if posts && posts.length
+        - posts.each(function (item) {
+            .post-item
+                a.post-title-link(href=url_for(item.path))
+                    +postTitle(item.title)
+                p.post-line
+                +postInfo(item)
+        - })
+
+mixin postListFlat(posts, wrap)
+    if wrap !== false
+        .archive.tag-archive
+            +postListFlatItems(posts)
+    else
+        +postListFlatItems(posts)
 
 //- Post Page
 mixin post(item)

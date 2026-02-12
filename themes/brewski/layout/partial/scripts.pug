@@ -16,6 +16,7 @@ script.
     var __scrollListenerBound = false
     var __scrollTicking = false
     var __scrollToTopFrame = null
+    var __live2dOptions = !{JSON.stringify(theme.live2d || {})}
 
     function registerScrollHandler(handler) {
         if (typeof handler !== 'function') return
@@ -151,6 +152,43 @@ script.
             }, { once: true })
             script.addEventListener('error', reject, { once: true })
             document.head.appendChild(script)
+        })
+    }
+
+    function initLive2D() {
+        if (!__live2dOptions || !__live2dOptions.enable) return
+        var scriptSrc = __live2dOptions.script || ''
+        var modelPath = __live2dOptions.model || ''
+        if (!scriptSrc || !modelPath) return
+
+        ensureScriptOnce('live2d-widget-script', scriptSrc).then(function() {
+            if (!window.L2Dwidget || typeof window.L2Dwidget.init !== 'function') return
+
+            var width = parseInt(__live2dOptions.width, 10)
+            var height = parseInt(__live2dOptions.height, 10)
+            var hOffset = parseInt(__live2dOptions.hOffset, 10)
+            var vOffset = parseInt(__live2dOptions.vOffset, 10)
+            var scale = typeof __live2dOptions.scale === 'number' ? __live2dOptions.scale : parseFloat(__live2dOptions.scale)
+
+            window.L2Dwidget.init({
+                model: { jsonPath: modelPath },
+                display: {
+                    position: __live2dOptions.position || 'right',
+                    width: Number.isFinite(width) ? width : 150,
+                    height: Number.isFinite(height) ? height : 300,
+                    hOffset: Number.isFinite(hOffset) ? hOffset : 0,
+                    vOffset: Number.isFinite(vOffset) ? vOffset : -20
+                },
+                mobile: {
+                    show: __live2dOptions.mobile !== false,
+                    scale: Number.isFinite(scale) ? scale : 0.8
+                },
+                react: {
+                    opacityDefault: Number.isFinite(__live2dOptions.opacityDefault) ? __live2dOptions.opacityDefault : 0.7,
+                    opacityOnHover: Number.isFinite(__live2dOptions.opacityOnHover) ? __live2dOptions.opacityOnHover : 0.2
+                }
+            })
+        }).catch(function() {
         })
     }
 
@@ -538,6 +576,7 @@ script.
         initBackToTop()
         initLogoScrollTop()
         initUtterances()
+        initLive2D()
         initImagePreview()
         initPostToc()
         initHeadingAnchors()

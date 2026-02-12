@@ -67,6 +67,19 @@ body > .wrap {
   flex-direction: column;
 }
 
+.wrap #swup {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.wrap #swup > .container {
+  flex: 1;
+}
+
+.wrap #swup > footer {
+  margin-top: auto;
+}
 .site-header {
   width: 100%;
   position: fixed;
@@ -310,6 +323,14 @@ table tbody td :last-child {
   color: rgba(34, 40, 49, 0.18);
 }
 
+.tag-archive .archive-year {
+  letter-spacing: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  transform: scale(0.92);
+  transform-origin: left top;
+}
+
 .site-header .nav-list-item {
   display: inline-block;
   padding: 0.4em 0.65em;
@@ -421,9 +442,30 @@ table tbody td :last-child {
 .post-block .post-info {
   color: #393e46;
   margin: 1.2em 0;
+  display: flex;
+  align-items: center;
 }
 .post-block .post-info span {
   margin-left: 0.5rem;
+}
+.post-tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  margin-left: 2rem !important;
+  align-content: center;
+}
+.post-tag {
+  align-content: center;
+  color: #bfbfbf;
+  font-size: 0.8rem;
+  padding: 0 3px;
+  text-decoration: none;
+  border: 1px dashed #bfbfbf;
+}
+.post-tag:hover {
+  color: #801501;
+  border-color: #801501;
 }
 .post-block .post-info a.post-from {
   margin-left: 0.5rem;
@@ -433,6 +475,7 @@ table tbody td :last-child {
   color: #fff;
   background-color: #e36b6b;
 }
+
 
 .post-content h2,
 .post-content h3,
@@ -660,8 +703,8 @@ pre {
 .highlight {
   position: relative;
   margin: 1em 0;
-  border-radius: 0.02em;
-  line-height: 1.1em;
+  /* border-radius: 0.02em; */
+  /* line-height: 1.1em; */
   background-color: #f8f8f8;
   max-width: 100%;
   overflow: hidden;
@@ -1018,6 +1061,12 @@ pre .strong {
   }
   .archive-group:hover .archive-year {
     color: rgba(34, 40, 49, 0.09);
+  }
+  /* .tag-archive .archive-year {
+    font-size: clamp(3.2rem, 12vw, 6.5rem);
+  } */
+  .post-tags {
+    margin-left: 1rem !important;
   }
   .post-block .post-title {
     font-size: 1.8em;
