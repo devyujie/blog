@@ -6,6 +6,9 @@
       "updated": 1770873900000,
       "properties": {
         "date": "2024-08-25 00:00:00",
+        "tags": [
+          "教程"
+        ],
         "permalink": "Unlimited-use-of-the-cursor/",
         "title": "无限续杯 Cursor",
         "updated": "2026-02-12 13:25:00"
@@ -15,11 +18,31 @@
       "docPath": "./source/_posts"
     },
     {
+      "id": "30172e8a-beb7-80a7-9f47-c172ede86f56",
+      "doc_id": "30172e8a-beb7-80a7-9f47-c172ede86f56",
+      "updated": 1770877200000,
+      "properties": {
+        "date": "2024-01-17 00:00:00",
+        "tags": [
+          "工具"
+        ],
+        "permalink": "Beautify-your-GitHub-personal-homepage/",
+        "title": "美化自己的 GitHub 个人主页",
+        "updated": "2026-02-12 14:20:00"
+      },
+      "realName": "美化自己的 GitHub 个人主页",
+      "relativePath": "/美化自己的 GitHub 个人主页.md",
+      "docPath": "./source/_posts"
+    },
+    {
       "id": "30172e8a-beb7-80e7-9701-c59fd4c7501c",
       "doc_id": "30172e8a-beb7-80e7-9701-c59fd4c7501c",
       "updated": 1770866700000,
       "properties": {
         "date": "2023-04-18 00:00:00",
+        "tags": [
+          "教程"
+        ],
         "permalink": "Deploying-your-own-ChatGPT/",
         "title": "部署自己的 ChatGPT",
         "updated": "2026-02-12 11:25:00"
@@ -34,26 +57,15 @@
       "updated": 1770866700000,
       "properties": {
         "date": "2023-10-11 00:00:00",
+        "tags": [
+          "工具"
+        ],
         "permalink": "Set-up-Google-Voice-to-automatically-keep-the-number/",
         "title": "设置 Google Voice 自动保号",
         "updated": "2026-02-12 11:25:00"
       },
       "realName": "设置 Google Voice 自动保号",
       "relativePath": "/设置 Google Voice 自动保号.md",
-      "docPath": "./source/_posts"
-    },
-    {
-      "id": "30172e8a-beb7-80a7-9f47-c172ede86f56",
-      "doc_id": "30172e8a-beb7-80a7-9f47-c172ede86f56",
-      "updated": 1770877200000,
-      "properties": {
-        "date": "2024-01-17 00:00:00",
-        "permalink": "Beautify-your-GitHub-personal-homepage/",
-        "title": "美化自己的 GitHub 个人主页",
-        "updated": "2026-02-12 14:20:00"
-      },
-      "realName": "美化自己的 GitHub 个人主页",
-      "relativePath": "/美化自己的 GitHub 个人主页.md",
       "docPath": "./source/_posts"
     }
   ],
@@ -82,6 +94,9 @@
       "is_locked": false,
       "properties": {
         "date": "2024-08-25 00:00:00",
+        "tags": [
+          "教程"
+        ],
         "permalink": "Unlimited-use-of-the-cursor/",
         "title": "无限续杯 Cursor",
         "updated": "2026-02-12 13:25:00"
@@ -113,6 +128,9 @@
       "is_locked": false,
       "properties": {
         "date": "2023-10-11 00:00:00",
+        "tags": [
+          "工具"
+        ],
         "permalink": "Set-up-Google-Voice-to-automatically-keep-the-number/",
         "title": "设置 Google Voice 自动保号",
         "updated": "2026-02-12 11:25:00"
@@ -144,6 +162,9 @@
       "is_locked": false,
       "properties": {
         "date": "2024-01-17 00:00:00",
+        "tags": [
+          "工具"
+        ],
         "permalink": "Beautify-your-GitHub-personal-homepage/",
         "title": "美化自己的 GitHub 个人主页",
         "updated": "2026-02-12 14:20:00"
@@ -175,6 +196,9 @@
       "is_locked": false,
       "properties": {
         "date": "2023-04-18 00:00:00",
+        "tags": [
+          "教程"
+        ],
         "permalink": "Deploying-your-own-ChatGPT/",
         "title": "部署自己的 ChatGPT",
         "updated": "2026-02-12 11:25:00"
