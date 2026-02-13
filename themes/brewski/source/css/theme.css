@@ -461,6 +461,7 @@ table tbody td :last-child {
   font-size: 0.8rem;
   /* padding: 0 3px; */
   text-decoration: none;
+  margin-top: 0.2rem;
   /* border: 1px dashed #bfbfbf; */
 }
 .post-tag:hover {
