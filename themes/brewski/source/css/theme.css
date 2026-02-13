@@ -71,6 +71,11 @@ body > .wrap {
   flex: 1;
   display: flex;
   flex-direction: column;
+  transition: opacity 0.2s ease;
+}
+
+.wrap #swup.is-pjax-loading {
+  opacity: 0.58;
 }
 
 .wrap #swup > .container {
@@ -79,6 +84,12 @@ body > .wrap {
 
 .wrap #swup > footer {
   margin-top: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wrap #swup {
+    transition: none;
+  }
 }
 .site-header {
   width: 100%;
@@ -1282,6 +1293,25 @@ pre .strong {
 .giscus-frame{
   margin-top: 4em;
 
+}
+
+#live2d-widget {
+  opacity: 0;
+  transition: opacity 0.32s ease-out;
+}
+
+#live2d-widget.live2d-ready {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #live2d-widget {
+    transition: none;
+  }
+
+  .post-content img.previewable-image {
+    transition: none;
+  }
 }
 
 @media screen and (max-width: 1200px) {

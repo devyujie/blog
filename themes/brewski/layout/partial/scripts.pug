@@ -17,25 +17,174 @@ script.
     var __scrollTicking = false
     var __scrollToTopFrame = null
     var __live2dOptions = !{JSON.stringify(theme.live2d || {})}
+    var __postTocCleanup = null
+    var __pjaxBound = false
+    var __pjaxLoading = false
+    var __pjaxAbortController = null
+    var __pjaxCurrentPath = null
 
     function registerScrollHandler(handler) {
-        if (typeof handler !== 'function') return
+        if (typeof handler !== 'function') return function() {}
         __scrollHandlers.push(handler)
-        if (__scrollListenerBound) return
-        window.addEventListener('scroll', function() {
-            if (__scrollTicking) return
-            __scrollTicking = true
-            window.requestAnimationFrame(function() {
-                __scrollTicking = false
-                for (var i = 0; i < __scrollHandlers.length; i += 1) {
-                    try {
-                        __scrollHandlers[i]()
-                    } catch (err) {
+        if (!__scrollListenerBound) {
+            window.addEventListener('scroll', function() {
+                if (__scrollTicking) return
+                __scrollTicking = true
+                window.requestAnimationFrame(function() {
+                    __scrollTicking = false
+                    for (var i = 0; i < __scrollHandlers.length; i += 1) {
+                        try {
+                            __scrollHandlers[i]()
+                        } catch (err) {
+                        }
                     }
-                }
-            })
-        }, { passive: true })
-        __scrollListenerBound = true
+                })
+            }, { passive: true })
+            __scrollListenerBound = true
+        }
+
+        return function unregisterScrollHandler() {
+            var index = __scrollHandlers.indexOf(handler)
+            if (index === -1) return
+            __scrollHandlers.splice(index, 1)
+        }
+    }
+
+    function normalizePathname(pathname) {
+        if (!pathname) return '/'
+        var normalized = pathname
+        normalized = normalized.replace(/\/index\.html$/, '/')
+        if (normalized.length > 1 && normalized.charAt(normalized.length - 1) === '/') {
+            normalized = normalized.slice(0, -1)
+        }
+        return normalized || '/'
+    }
+
+    function extractPathname(href) {
+        try {
+            return new URL(href, window.location.origin).pathname || '/'
+        } catch (err) {
+            return href || '/'
+        }
+    }
+
+    function updateNavActiveState() {
+        var current = normalizePathname(window.location.pathname || '/')
+        var links = document.querySelectorAll('.site-header .nav-list-link')
+        if (!links || !links.length) return
+
+        Array.prototype.forEach.call(links, function(link) {
+            var href = link.getAttribute('href') || '/'
+            var path = normalizePathname(extractPathname(href))
+            var isActive = false
+
+            if (path === '/') {
+                isActive = current === '/'
+            } else if (path.indexOf('/archives') === 0) {
+                isActive = current.indexOf('/archives') === 0
+            } else {
+                isActive = current.indexOf(path) === 0
+            }
+
+            link.classList.toggle('is-active', isActive)
+        })
+    }
+
+    function syncMetaContent(nextDoc, selector, removeIfMissing) {
+        var nextMeta = nextDoc.head.querySelector(selector)
+        var currentMeta = document.head.querySelector(selector)
+
+        if (!nextMeta) {
+            if (removeIfMissing && currentMeta && currentMeta.parentNode) {
+                currentMeta.parentNode.removeChild(currentMeta)
+            }
+            return
+        }
+
+        if (!currentMeta) {
+            document.head.appendChild(nextMeta.cloneNode(true))
+            return
+        }
+
+        var content = nextMeta.getAttribute('content')
+        if (content !== null) {
+            currentMeta.setAttribute('content', content)
+        }
+    }
+
+    function syncDocumentHead(nextDoc) {
+        if (!nextDoc || !nextDoc.head) return
+        if (nextDoc.title) {
+            document.title = nextDoc.title
+        }
+
+        syncMetaContent(nextDoc, 'meta[name="description"]', false)
+        syncMetaContent(nextDoc, 'meta[property="og:title"]', false)
+        syncMetaContent(nextDoc, 'meta[property="og:description"]', false)
+        syncMetaContent(nextDoc, 'meta[property="og:url"]', false)
+        syncMetaContent(nextDoc, 'meta[property="article:published_time"]', true)
+        syncMetaContent(nextDoc, 'meta[property="article:modified_time"]', true)
+    }
+
+    function shouldHandlePjaxLink(link, event) {
+        if (!link) return false
+        if (event.defaultPrevented) return false
+        if (event.button !== 0) return false
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return false
+        if (link.hasAttribute('download')) return false
+
+        var target = link.getAttribute('target')
+        if (target && target !== '_self') return false
+        if (link.hasAttribute('data-no-pjax')) return false
+
+        var href = link.getAttribute('href')
+        if (!href) return false
+        if (href.indexOf('mailto:') === 0 || href.indexOf('tel:') === 0 || href.indexOf('javascript:') === 0) return false
+
+        var nextUrl = null
+        try {
+            nextUrl = new URL(href, window.location.href)
+        } catch (err) {
+            return false
+        }
+
+        if (nextUrl.origin !== window.location.origin) return false
+
+        var currentPath = normalizePathname(window.location.pathname || '/')
+        var nextPath = normalizePathname(nextUrl.pathname || '/')
+        if (currentPath === nextPath && nextUrl.hash) {
+            return false
+        }
+
+        return true
+    }
+
+    function scrollToHash(hash) {
+        if (!hash) return false
+        var raw = hash.charAt(0) === '#' ? hash.slice(1) : hash
+        if (!raw) return false
+
+        var id = raw
+        try {
+            id = decodeURIComponent(raw)
+        } catch (err) {
+        }
+
+        var target = document.getElementById(id)
+        if (!target) return false
+
+        var header = document.querySelector('.site-header')
+        var offset = header ? header.getBoundingClientRect().height : 0
+        var top = target.getBoundingClientRect().top + (window.scrollY || document.documentElement.scrollTop || 0) - offset
+        window.scrollTo(0, Math.max(0, Math.round(top)))
+        return true
+    }
+
+    function setPjaxLoading(isLoading) {
+        __pjaxLoading = !!isLoading
+        var root = document.getElementById('swup')
+        if (!root) return
+        root.classList.toggle('is-pjax-loading', __pjaxLoading)
     }
 
     function scrollToTop(duration) {
@@ -97,35 +246,79 @@ script.
                 window.scrollTo(0, 0)
                 return
             }
+            if (typeof window.__navigateWithPjax === 'function') {
+                window.__navigateWithPjax(href, { push: true })
+                return
+            }
             window.location.href = href
         })
 
         logoLink.__logoTopBound = true
     }
 
-    function initUtterances() {
-        var container = document.getElementById('utterances-container')
+    function loadGiscus(container) {
         if (!container) return
+        if (container.getAttribute('data-loaded') === '1') return
 
         var repo = container.getAttribute('data-repo')
         if (!repo) return
 
-        container.innerHTML = ''
-
         var script = document.createElement('script')
-        script.src = 'https://utteranc.es/client.js'
+        script.src = 'https://giscus.app/client.js'
         script.async = true
         script.crossOrigin = 'anonymous'
-        script.setAttribute('repo', repo)
-        script.setAttribute('issue-term', container.getAttribute('data-issue-term') || 'pathname')
-        script.setAttribute('theme', container.getAttribute('data-theme') || 'github-light')
 
-        var label = container.getAttribute('data-label')
-        if (label) {
-            script.setAttribute('label', label)
+        var attrs = [
+            'data-repo',
+            'data-repo-id',
+            'data-category',
+            'data-category-id',
+            'data-mapping',
+            'data-strict',
+            'data-reactions-enabled',
+            'data-emit-metadata',
+            'data-input-position',
+            'data-theme',
+            'data-lang',
+            'data-loading'
+        ]
+
+        for (var i = 0; i < attrs.length; i += 1) {
+            var key = attrs[i]
+            var value = container.getAttribute(key)
+            if (value) {
+                script.setAttribute(key, value)
+            }
         }
 
+        container.innerHTML = ''
         container.appendChild(script)
+        container.setAttribute('data-loaded', '1')
+    }
+
+    function initGiscusLazy() {
+        var container = document.getElementById('giscus-container')
+        if (!container) return
+
+        if (typeof window.IntersectionObserver !== 'function') {
+            loadGiscus(container)
+            return
+        }
+
+        if (container.__giscusObserverBound) return
+
+        var observer = new IntersectionObserver(function(entries) {
+            if (!entries || !entries.length) return
+            for (var i = 0; i < entries.length; i += 1) {
+                if (!entries[i].isIntersecting) continue
+                loadGiscus(container)
+                observer.disconnect()
+                return
+            }
+        }, { rootMargin: '300px 0px' })
+
+        observer.observe(container)
+        container.__giscusObserverBound = true
     }
 
 
@@ -155,14 +348,61 @@ script.
         })
     }
 
+    function revealLive2DWidget() {
+        var markReady = function(widget) {
+            if (!widget) return
+            if (widget.getAttribute('data-live2d-ready') === '1') return
+            window.requestAnimationFrame(function() {
+                widget.classList.add('live2d-ready')
+                widget.setAttribute('data-live2d-ready', '1')
+            })
+        }
+
+        var existed = document.getElementById('live2d-widget')
+        if (existed) {
+            markReady(existed)
+            return
+        }
+
+        if (!document.body || typeof window.MutationObserver !== 'function') return
+
+        var observer = new MutationObserver(function() {
+            var widget = document.getElementById('live2d-widget')
+            if (!widget) return
+            markReady(widget)
+            observer.disconnect()
+        })
+
+        observer.observe(document.body, { childList: true, subtree: true })
+        window.setTimeout(function() {
+            observer.disconnect()
+            markReady(document.getElementById('live2d-widget'))
+        }, 6000)
+    }
+
     function initLive2D() {
         if (!__live2dOptions || !__live2dOptions.enable) return
         var scriptSrc = __live2dOptions.script || ''
         var modelPath = __live2dOptions.model || ''
         if (!scriptSrc || !modelPath) return
+        var onlyOnce = __live2dOptions.once !== false
+        var existingWidget = document.getElementById('live2d-widget')
+        if (onlyOnce && window.__live2dInitialized && existingWidget) {
+            revealLive2DWidget()
+            return
+        }
 
         ensureScriptOnce('live2d-widget-script', scriptSrc).then(function() {
             if (!window.L2Dwidget || typeof window.L2Dwidget.init !== 'function') return
+
+            var widget = document.getElementById('live2d-widget')
+            if (widget) {
+                window.__live2dInitialized = true
+                revealLive2DWidget()
+                return
+            }
+
+            revealLive2DWidget()
 
             var width = parseInt(__live2dOptions.width, 10)
             var height = parseInt(__live2dOptions.height, 10)
@@ -188,6 +428,11 @@ script.
                     opacityOnHover: Number.isFinite(__live2dOptions.opacityOnHover) ? __live2dOptions.opacityOnHover : 0.2
                 }
             })
+            window.__live2dInitialized = true
+
+            // The widget element is injected asynchronously by the library.
+            window.setTimeout(revealLive2DWidget, 120)
+            window.setTimeout(revealLive2DWidget, 420)
         }).catch(function() {
         })
     }
@@ -314,6 +559,11 @@ script.
     }
 
     function initPostToc() {
+        if (typeof __postTocCleanup === 'function') {
+            __postTocCleanup()
+            __postTocCleanup = null
+        }
+
         var toc = document.querySelector('.post-toc')
         if (!toc) return
 
@@ -494,17 +744,27 @@ script.
         }
 
         refreshHeadingTops()
-        registerScrollHandler(updateActive)
-        window.addEventListener('resize', function() {
+        var unregisterScroll = registerScrollHandler(updateActive)
+        var onResize = function() {
             refreshHeadingTops()
             updateActive()
-        })
-        window.addEventListener('load', function() {
+        }
+        var onLoad = function() {
             refreshHeadingTops()
             updateActive()
             alignToHash()
-        })
+        }
+        window.addEventListener('resize', onResize)
+        window.addEventListener('load', onLoad)
         window.addEventListener('hashchange', alignToHash)
+        __postTocCleanup = function() {
+            if (typeof unregisterScroll === 'function') {
+                unregisterScroll()
+            }
+            window.removeEventListener('resize', onResize)
+            window.removeEventListener('load', onLoad)
+            window.removeEventListener('hashchange', alignToHash)
+        }
         updateActive()
         window.setTimeout(alignToHash, 0)
         window.setTimeout(alignToHash, 120)
@@ -572,12 +832,137 @@ script.
         })
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
-        initBackToTop()
-        initLogoScrollTop()
-        initUtterances()
-        initLive2D()
+    function initPageFeatures() {
+        updateNavActiveState()
+        initGiscusLazy()
         initImagePreview()
         initPostToc()
         initHeadingAnchors()
+    }
+
+    function applyPjaxDocument(nextDoc) {
+        if (!nextDoc) return false
+        var currentRoot = document.getElementById('swup')
+        var nextRoot = nextDoc.getElementById('swup')
+        if (!currentRoot || !nextRoot) return false
+
+        if (typeof __postTocCleanup === 'function') {
+            __postTocCleanup()
+            __postTocCleanup = null
+        }
+
+        var currentMain = currentRoot.querySelector('main.container')
+        var currentFooter = currentRoot.querySelector('footer')
+        var nextMain = nextRoot.querySelector('main.container')
+        var nextFooter = nextRoot.querySelector('footer')
+        if (!currentMain || !currentFooter || !nextMain || !nextFooter) return false
+
+        currentMain.innerHTML = nextMain.innerHTML
+        currentFooter.innerHTML = nextFooter.innerHTML
+        syncDocumentHead(nextDoc)
+        return true
+    }
+
+    function navigateWithPjax(url, options) {
+        options = options || {}
+
+        var href = url
+        try {
+            href = new URL(url, window.location.href).href
+        } catch (err) {
+            window.location.href = url
+            return Promise.resolve(false)
+        }
+
+        if (__pjaxAbortController && typeof __pjaxAbortController.abort === 'function') {
+            __pjaxAbortController.abort()
+        }
+        __pjaxAbortController = typeof window.AbortController === 'function' ? new AbortController() : null
+        setPjaxLoading(true)
+
+        var requestOptions = { credentials: 'same-origin' }
+        if (__pjaxAbortController) {
+            requestOptions.signal = __pjaxAbortController.signal
+        }
+
+        return fetch(href, requestOptions).then(function(response) {
+            if (!response.ok) {
+                throw new Error('PJAX request failed: ' + response.status)
+            }
+            return response.text()
+        }).then(function(html) {
+            var nextDoc = new DOMParser().parseFromString(html, 'text/html')
+            var applied = applyPjaxDocument(nextDoc)
+            if (!applied) {
+                throw new Error('PJAX target not found')
+            }
+
+            if (options.push !== false) {
+                window.history.pushState({}, '', href)
+            }
+            __pjaxCurrentPath = normalizePathname(extractPathname(href))
+
+            initPageFeatures()
+
+            var nextHash = ''
+            try {
+                nextHash = new URL(href, window.location.origin).hash || ''
+            } catch (err) {
+            }
+            if (!scrollToHash(nextHash)) {
+                window.scrollTo(0, 0)
+            }
+
+            return true
+        }).catch(function(error) {
+            if (error && error.name === 'AbortError') {
+                return false
+            }
+            window.location.href = href
+            return false
+        }).finally(function() {
+            setPjaxLoading(false)
+        })
+    }
+
+    function initPjaxNavigation() {
+        if (__pjaxBound) return
+        if (!document.getElementById('swup')) return
+        if (typeof window.fetch !== 'function') return
+        if (!window.history || typeof window.history.pushState !== 'function') return
+        __pjaxCurrentPath = normalizePathname(window.location.pathname || '/')
+
+        document.addEventListener('click', function(event) {
+            var link = event.target.closest('a')
+            if (!shouldHandlePjaxLink(link, event)) return
+
+            event.preventDefault()
+            var href = link.getAttribute('href')
+            navigateWithPjax(href, { push: true })
+        })
+
+        window.addEventListener('popstate', function() {
+            var currentPath = normalizePathname(window.location.pathname || '/')
+            if (__pjaxCurrentPath && currentPath === __pjaxCurrentPath) {
+                if (!scrollToHash(window.location.hash || '')) {
+                    window.scrollTo(0, 0)
+                }
+                return
+            }
+            navigateWithPjax(window.location.href, { push: false })
+        })
+
+        window.__navigateWithPjax = function(href, options) {
+            return navigateWithPjax(href, options || { push: true })
+        }
+
+        __pjaxBound = true
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        initBackToTop()
+        initLogoScrollTop()
+        initLive2D()
+        initPjaxNavigation()
+        initPageFeatures()
     })

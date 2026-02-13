@@ -1,6 +1,5 @@
 if theme.giscus && theme.giscus.enable
-    script(
-        src='https://giscus.app/client.js'
+    #giscus-container.giscus-frame(
         data-repo=theme.giscus.repo
         data-repo-id=theme.giscus.repo_id
         data-category=theme.giscus.category
@@ -13,6 +12,4 @@ if theme.giscus && theme.giscus.enable
         data-theme=(theme.giscus.theme || 'preferred_color_scheme')
         data-lang=(theme.giscus.lang || 'zh-CN')
         data-loading=(theme.giscus.loading || 'lazy')
-        crossorigin='anonymous'
-        async
     )

@@ -29,8 +29,8 @@ giscus: # Giscus 评论系统配置
   loading: lazy # 加载方式
 
 live2d: # 小宠物配置
-  enable: false
-  once: false # 是否仅在当前会话首次加载
+  enable: true
+  once: true # 是否仅在当前会话首次加载
   script: https://cdn.jsdelivr.net/npm/live2d-widget@3.1.4/lib/L2Dwidget.min.js
   model: https://cdn.jsdelivr.net/npm/live2d-widget-model-hijiki@1.0.5/assets/hijiki.model.json
   position: left
