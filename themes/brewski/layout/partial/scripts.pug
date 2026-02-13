@@ -28,6 +28,25 @@ script.
     var __pjaxPrefetchBound = false
     var __pjaxPrefetchInFlight = {}
 
+    function shouldPrefetchPjax() {
+        if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return false
+        if (typeof navigator === 'undefined') return true
+        if (navigator.onLine === false) return false
+
+        var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection
+        if (!connection) return true
+        if (connection.saveData) return false
+
+        var effectiveType = (connection.effectiveType || '').toLowerCase()
+        if (effectiveType === 'slow-2g' || effectiveType === '2g') return false
+
+        if (typeof navigator.deviceMemory === 'number' && navigator.deviceMemory > 0 && navigator.deviceMemory < 2) {
+            return false
+        }
+
+        return true
+    }
+
     function registerScrollHandler(handler) {
         if (typeof handler !== 'function') return function() {}
         __scrollHandlers.push(handler)
@@ -160,6 +179,7 @@ script.
     }
 
     function prefetchPjaxUrl(href) {
+        if (!shouldPrefetchPjax()) return
         var url = createPjaxUrl(href)
         if (!url) return
         var key = getPjaxCacheKey(url)
@@ -947,15 +967,24 @@ script.
         initImagePreview()
         initPostToc()
         initHeadingAnchors()
-        window.setTimeout(function() {
-            warmPjaxLinkCache(8)
-        }, 120)
+        if (!shouldPrefetchPjax()) return
+        var runWarmCache = function() {
+            warmPjaxLinkCache(2)
+        }
+
+        if (typeof window.requestIdleCallback === 'function') {
+            window.requestIdleCallback(runWarmCache, { timeout: 1200 })
+            return
+        }
+
+        window.setTimeout(runWarmCache, 220)
     }
 
     function warmPjaxLinkCache(limit) {
+        if (!shouldPrefetchPjax()) return
         var links = document.querySelectorAll('#swup a')
         if (!links || !links.length) return
-        var max = Number.isFinite(limit) ? limit : 8
+        var max = Number.isFinite(limit) ? limit : 2
         if (max <= 0) return
 
         var count = 0
@@ -972,16 +1001,20 @@ script.
         if (__pjaxPrefetchBound) return
 
         document.addEventListener('pointerenter', function(event) {
+            if (!shouldPrefetchPjax()) return
+            var pointerType = (event && event.pointerType ? event.pointerType : '').toLowerCase()
+            if (pointerType && pointerType !== 'mouse') return
             var link = event.target && event.target.closest ? event.target.closest('a') : null
             if (!isPjaxEligibleLink(link)) return
             prefetchPjaxUrl(link.getAttribute('href'))
         }, true)
 
-        document.addEventListener('touchstart', function(event) {
+        document.addEventListener('focusin', function(event) {
+            if (!shouldPrefetchPjax()) return
             var link = event.target && event.target.closest ? event.target.closest('a') : null
             if (!isPjaxEligibleLink(link)) return
             prefetchPjaxUrl(link.getAttribute('href'))
-        }, { capture: true, passive: true })
+        }, true)
 
         __pjaxPrefetchBound = true
     }

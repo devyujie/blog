@@ -352,6 +352,12 @@ table tbody td :last-child {
 }
 
 @media screen and (max-width: 600px) {
+  .site-header {
+    background: rgba(255, 255, 255, 0.94);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
   :root {
     --site-header-height: 3.7rem;
   }
