@@ -22,6 +22,11 @@ script.
     var __pjaxLoading = false
     var __pjaxAbortController = null
     var __pjaxCurrentPath = null
+    var __pjaxCache = new Map()
+    var __pjaxCacheLimit = 24
+    var __pjaxLoadingTimer = null
+    var __pjaxPrefetchBound = false
+    var __pjaxPrefetchInFlight = {}
 
     function registerScrollHandler(handler) {
         if (typeof handler !== 'function') return function() {}
@@ -66,6 +71,111 @@ script.
         } catch (err) {
             return href || '/'
         }
+    }
+
+    function createPjaxUrl(href) {
+        var nextUrl = null
+        try {
+            nextUrl = new URL(href, window.location.href)
+        } catch (err) {
+            return null
+        }
+        if (!nextUrl) return null
+        if (nextUrl.origin !== window.location.origin) return null
+        if (nextUrl.protocol !== 'http:' && nextUrl.protocol !== 'https:') return null
+        return nextUrl
+    }
+
+    function getRouteKeyFromUrl(url) {
+        if (!url) return '/'
+        return normalizePathname(url.pathname || '/') + (url.search || '')
+    }
+
+    function getPjaxCacheKey(url) {
+        if (!url) return ''
+        return url.origin + getRouteKeyFromUrl(url)
+    }
+
+    function setPjaxCache(key, html) {
+        if (!key || !html) return
+        if (__pjaxCache.has(key)) {
+            __pjaxCache.delete(key)
+        }
+        __pjaxCache.set(key, html)
+        if (__pjaxCache.size <= __pjaxCacheLimit) return
+        var firstKey = __pjaxCache.keys().next().value
+        if (firstKey) {
+            __pjaxCache.delete(firstKey)
+        }
+    }
+
+    function getCachedPjaxHtml(url) {
+        var key = getPjaxCacheKey(url)
+        if (!key || !__pjaxCache.has(key)) return null
+        var html = __pjaxCache.get(key)
+        // LRU bump
+        __pjaxCache.delete(key)
+        __pjaxCache.set(key, html)
+        return html
+    }
+
+    function fetchPjaxHtml(url, requestOptions) {
+        var cached = getCachedPjaxHtml(url)
+        if (cached) {
+            return Promise.resolve(cached)
+        }
+
+        return fetch(url.href, requestOptions).then(function(response) {
+            if (!response.ok) {
+                throw new Error('PJAX request failed: ' + response.status)
+            }
+            return response.text()
+        }).then(function(html) {
+            setPjaxCache(getPjaxCacheKey(url), html)
+            return html
+        })
+    }
+
+    function isPjaxEligibleLink(link) {
+        if (!link) return false
+        if (link.hasAttribute('download')) return false
+
+        var target = link.getAttribute('target')
+        if (target && target !== '_self') return false
+        if (link.hasAttribute('data-no-pjax')) return false
+
+        var href = link.getAttribute('href')
+        if (!href) return false
+        if (href.indexOf('mailto:') === 0 || href.indexOf('tel:') === 0 || href.indexOf('javascript:') === 0) return false
+
+        var nextUrl = createPjaxUrl(href)
+        if (!nextUrl) return false
+
+        var currentRouteKey = getRouteKeyFromUrl(new URL(window.location.href))
+        var nextRouteKey = getRouteKeyFromUrl(nextUrl)
+        if (currentRouteKey === nextRouteKey && nextUrl.hash) {
+            return false
+        }
+        return true
+    }
+
+    function prefetchPjaxUrl(href) {
+        var url = createPjaxUrl(href)
+        if (!url) return
+        var key = getPjaxCacheKey(url)
+        if (!key || __pjaxCache.has(key) || __pjaxPrefetchInFlight[key]) return
+
+        __pjaxPrefetchInFlight[key] = true
+        fetch(url.href, { credentials: 'same-origin' }).then(function(response) {
+            if (!response.ok) return null
+            return response.text()
+        }).then(function(html) {
+            if (!html) return
+            setPjaxCache(key, html)
+        }).catch(function() {
+        }).finally(function() {
+            delete __pjaxPrefetchInFlight[key]
+        })
     }
 
     function updateNavActiveState() {
@@ -131,24 +241,11 @@ script.
         if (event.defaultPrevented) return false
         if (event.button !== 0) return false
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return false
-        if (link.hasAttribute('download')) return false
-
-        var target = link.getAttribute('target')
-        if (target && target !== '_self') return false
-        if (link.hasAttribute('data-no-pjax')) return false
+        if (!isPjaxEligibleLink(link)) return false
 
         var href = link.getAttribute('href')
-        if (!href) return false
-        if (href.indexOf('mailto:') === 0 || href.indexOf('tel:') === 0 || href.indexOf('javascript:') === 0) return false
-
-        var nextUrl = null
-        try {
-            nextUrl = new URL(href, window.location.href)
-        } catch (err) {
-            return false
-        }
-
-        if (nextUrl.origin !== window.location.origin) return false
+        var nextUrl = createPjaxUrl(href)
+        if (!nextUrl) return false
 
         var currentPath = normalizePathname(window.location.pathname || '/')
         var nextPath = normalizePathname(nextUrl.pathname || '/')
@@ -184,7 +281,19 @@ script.
         __pjaxLoading = !!isLoading
         var root = document.getElementById('swup')
         if (!root) return
-        root.classList.toggle('is-pjax-loading', __pjaxLoading)
+        if (__pjaxLoadingTimer) {
+            window.clearTimeout(__pjaxLoadingTimer)
+            __pjaxLoadingTimer = null
+        }
+
+        if (__pjaxLoading) {
+            __pjaxLoadingTimer = window.setTimeout(function() {
+                root.classList.add('is-pjax-loading')
+            }, 120)
+            return
+        }
+
+        root.classList.remove('is-pjax-loading')
     }
 
     function scrollToTop(duration) {
@@ -838,6 +947,43 @@ script.
         initImagePreview()
         initPostToc()
         initHeadingAnchors()
+        window.setTimeout(function() {
+            warmPjaxLinkCache(8)
+        }, 120)
+    }
+
+    function warmPjaxLinkCache(limit) {
+        var links = document.querySelectorAll('#swup a')
+        if (!links || !links.length) return
+        var max = Number.isFinite(limit) ? limit : 8
+        if (max <= 0) return
+
+        var count = 0
+        for (var i = 0; i < links.length; i += 1) {
+            var link = links[i]
+            if (!isPjaxEligibleLink(link)) continue
+            prefetchPjaxUrl(link.getAttribute('href'))
+            count += 1
+            if (count >= max) break
+        }
+    }
+
+    function initPjaxPrefetch() {
+        if (__pjaxPrefetchBound) return
+
+        document.addEventListener('pointerenter', function(event) {
+            var link = event.target && event.target.closest ? event.target.closest('a') : null
+            if (!isPjaxEligibleLink(link)) return
+            prefetchPjaxUrl(link.getAttribute('href'))
+        }, true)
+
+        document.addEventListener('touchstart', function(event) {
+            var link = event.target && event.target.closest ? event.target.closest('a') : null
+            if (!isPjaxEligibleLink(link)) return
+            prefetchPjaxUrl(link.getAttribute('href'))
+        }, { capture: true, passive: true })
+
+        __pjaxPrefetchBound = true
     }
 
     function applyPjaxDocument(nextDoc) {
@@ -866,13 +1012,12 @@ script.
     function navigateWithPjax(url, options) {
         options = options || {}
 
-        var href = url
-        try {
-            href = new URL(url, window.location.href).href
-        } catch (err) {
+        var nextUrl = createPjaxUrl(url)
+        if (!nextUrl) {
             window.location.href = url
             return Promise.resolve(false)
         }
+        var href = nextUrl.href
 
         if (__pjaxAbortController && typeof __pjaxAbortController.abort === 'function') {
             __pjaxAbortController.abort()
@@ -885,12 +1030,7 @@ script.
             requestOptions.signal = __pjaxAbortController.signal
         }
 
-        return fetch(href, requestOptions).then(function(response) {
-            if (!response.ok) {
-                throw new Error('PJAX request failed: ' + response.status)
-            }
-            return response.text()
-        }).then(function(html) {
+        return fetchPjaxHtml(nextUrl, requestOptions).then(function(html) {
             var nextDoc = new DOMParser().parseFromString(html, 'text/html')
             var applied = applyPjaxDocument(nextDoc)
             if (!applied) {
@@ -900,15 +1040,11 @@ script.
             if (options.push !== false) {
                 window.history.pushState({}, '', href)
             }
-            __pjaxCurrentPath = normalizePathname(extractPathname(href))
+            __pjaxCurrentPath = getRouteKeyFromUrl(nextUrl)
 
             initPageFeatures()
 
-            var nextHash = ''
-            try {
-                nextHash = new URL(href, window.location.origin).hash || ''
-            } catch (err) {
-            }
+            var nextHash = nextUrl.hash || ''
             if (!scrollToHash(nextHash)) {
                 window.scrollTo(0, 0)
             }
@@ -930,7 +1066,8 @@ script.
         if (!document.getElementById('swup')) return
         if (typeof window.fetch !== 'function') return
         if (!window.history || typeof window.history.pushState !== 'function') return
-        __pjaxCurrentPath = normalizePathname(window.location.pathname || '/')
+        __pjaxCurrentPath = getRouteKeyFromUrl(new URL(window.location.href))
+        initPjaxPrefetch()
 
         document.addEventListener('click', function(event) {
             var link = event.target.closest('a')
@@ -942,8 +1079,8 @@ script.
         })
 
         window.addEventListener('popstate', function() {
-            var currentPath = normalizePathname(window.location.pathname || '/')
-            if (__pjaxCurrentPath && currentPath === __pjaxCurrentPath) {
+            var currentRouteKey = getRouteKeyFromUrl(new URL(window.location.href))
+            if (__pjaxCurrentPath && currentRouteKey === __pjaxCurrentPath) {
                 if (!scrollToHash(window.location.hash || '')) {
                     window.scrollTo(0, 0)
                 }

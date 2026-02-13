@@ -71,11 +71,11 @@ body > .wrap {
   flex: 1;
   display: flex;
   flex-direction: column;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.12s ease;
 }
 
 .wrap #swup.is-pjax-loading {
-  opacity: 0.58;
+  opacity: 0.86;
 }
 
 .wrap #swup > .container {
@@ -524,20 +524,10 @@ table tbody td :last-child {
 .post-block .post-title .post-title-link {
   position: relative;
   color: inherit;
+  transition: color 0.1s ease;
 }
-.post-block .post-title .post-title-link::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -2px;
-  width: 0;
-  height: 4px;
-  background: #9e1900;
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 1;
-}
-.post-block .post-title .post-title-link:hover::after {
-  width: 100%;
+.post-block .post-title .post-title-link:hover {
+  color: #9e1900;
 }
 
 .post-content h2 {
