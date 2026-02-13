@@ -459,9 +459,9 @@ table tbody td :last-child {
   align-content: center;
   color: #bfbfbf;
   font-size: 0.8rem;
-  padding: 0 3px;
+  /* padding: 0 3px; */
   text-decoration: none;
-  border: 1px dashed #bfbfbf;
+  /* border: 1px dashed #bfbfbf; */
 }
 .post-tag:hover {
   color: #801501;
