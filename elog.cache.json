@@ -1,216 +1,29 @@
 {
   "docs": [
     {
-      "id": "30172e8a-beb7-8039-91da-c9ce7660e091",
-      "doc_id": "30172e8a-beb7-8039-91da-c9ce7660e091",
-      "updated": 1770873900000,
-      "properties": {
-        "date": "2024-08-25 00:00:00",
-        "tags": [
-          "教程"
-        ],
-        "permalink": "Unlimited-use-of-the-cursor/",
-        "title": "无限续杯 Cursor",
-        "updated": "2026-02-12 13:25:00"
-      },
-      "realName": "无限续杯 Cursor",
-      "relativePath": "/无限续杯 Cursor.md",
-      "docPath": "./source/_posts"
-    },
-    {
       "id": "30172e8a-beb7-80a7-9f47-c172ede86f56",
       "doc_id": "30172e8a-beb7-80a7-9f47-c172ede86f56",
-      "updated": 1770877200000,
+      "updated": 1771051380000,
       "properties": {
-        "date": "2024-01-17 00:00:00",
+        "date": "2026-02-14 00:00:00",
         "tags": [
-          "工具"
+          "杂谈"
         ],
-        "permalink": "Beautify-your-GitHub-personal-homepage/",
-        "title": "美化自己的 GitHub 个人主页",
-        "updated": "2026-02-12 14:20:00"
+        "permalink": "From-xLog-to-Notion-Hexo/",
+        "title": "从 xLog 到 Notion + Hexo：折腾是为了更好地躺平",
+        "updated": "2026-02-14 14:43:00"
       },
-      "realName": "美化自己的 GitHub 个人主页",
-      "relativePath": "/美化自己的 GitHub 个人主页.md",
-      "docPath": "./source/_posts"
-    },
-    {
-      "id": "30172e8a-beb7-8040-a4dc-cf4ba645ec56",
-      "doc_id": "30172e8a-beb7-8040-a4dc-cf4ba645ec56",
-      "updated": 1770866700000,
-      "properties": {
-        "date": "2023-10-11 00:00:00",
-        "tags": [
-          "工具"
-        ],
-        "permalink": "Set-up-Google-Voice-to-automatically-keep-the-number/",
-        "title": "设置 Google Voice 自动保号",
-        "updated": "2026-02-12 11:25:00"
-      },
-      "realName": "设置 Google Voice 自动保号",
-      "relativePath": "/设置 Google Voice 自动保号.md",
-      "docPath": "./source/_posts"
-    },
-    {
-      "id": "30172e8a-beb7-80e7-9701-c59fd4c7501c",
-      "doc_id": "30172e8a-beb7-80e7-9701-c59fd4c7501c",
-      "updated": 1770866700000,
-      "properties": {
-        "date": "2023-04-18 00:00:00",
-        "tags": [
-          "教程"
-        ],
-        "permalink": "Deploying-your-own-ChatGPT/",
-        "title": "部署自己的 ChatGPT",
-        "updated": "2026-02-12 11:25:00"
-      },
-      "realName": "部署自己的 ChatGPT",
-      "relativePath": "/部署自己的 ChatGPT.md",
-      "docPath": "./source/_posts"
-    },
-    {
-      "id": "30072e8a-beb7-81c5-997a-d0d03adfc5eb",
-      "doc_id": "30072e8a-beb7-81c5-997a-d0d03adfc5eb",
-      "updated": 1770889200000,
-      "properties": {
-        "date": "2026-02-08 00:00:00",
-        "tags": [
-          "教程"
-        ],
-        "permalink": "Notion-Hexo-Vercel-Blog/",
-        "title": "博客迁移指南（Notion + Hexo + GitHub Actions + Vercel ）",
-        "updated": "2026-02-12 17:40:00"
-      },
-      "realName": "博客迁移指南（Notion + Hexo + GitHub Actions + Vercel ）",
-      "relativePath": "/博客迁移指南（Notion + Hexo + GitHub Actions + Vercel ）.md",
-      "docPath": "./source/_posts"
-    },
-    {
-      "id": "30572e8a-beb7-80e7-a079-c1e79c79c217",
-      "doc_id": "30572e8a-beb7-80e7-a079-c1e79c79c217",
-      "updated": 1770889200000,
-      "properties": {
-        "date": "2026-02-12 00:00:00",
-        "tags": [
-          "工具"
-        ],
-        "permalink": "My-AI-Toolbox/",
-        "title": "我的 AI 工具箱",
-        "updated": "2026-02-12 17:40:00"
-      },
-      "realName": "我的 AI 工具箱",
-      "relativePath": "/我的 AI 工具箱.md",
+      "realName": "从 xLog 到 Notion + Hexo：折腾是为了更好地躺平",
+      "relativePath": "/从 xLog 到 Notion + Hexo：折腾是为了更好地躺平.md",
       "docPath": "./source/_posts"
     }
   ],
   "catalog": [
     {
       "object": "page",
-      "id": "30072e8a-beb7-81c5-997a-d0d03adfc5eb",
-      "created_time": "2026-02-07T05:07:00.000Z",
-      "last_edited_time": "2026-02-12T09:40:00.000Z",
-      "created_by": {
-        "object": "user",
-        "id": "7528572e-8991-4e26-876d-41d1ac76f2c1"
-      },
-      "last_edited_by": {
-        "object": "user",
-        "id": "7528572e-8991-4e26-876d-41d1ac76f2c1"
-      },
-      "cover": null,
-      "icon": null,
-      "parent": {
-        "type": "database_id",
-        "database_id": "30072e8a-beb7-810e-8173-e3785145856e"
-      },
-      "archived": false,
-      "in_trash": false,
-      "is_locked": false,
-      "properties": {
-        "date": "2026-02-08 00:00:00",
-        "tags": [
-          "教程"
-        ],
-        "permalink": "Notion-Hexo-Vercel-Blog/",
-        "title": "博客迁移指南（Notion + Hexo + GitHub Actions + Vercel ）",
-        "updated": "2026-02-12 17:40:00"
-      },
-      "url": "https://www.notion.so/Notion-Hexo-GitHub-Actions-Vercel-30072e8abeb781c5997ad0d03adfc5eb",
-      "public_url": null
-    },
-    {
-      "object": "page",
-      "id": "30172e8a-beb7-8039-91da-c9ce7660e091",
-      "created_time": "2026-02-08T10:16:00.000Z",
-      "last_edited_time": "2026-02-12T05:25:00.000Z",
-      "created_by": {
-        "object": "user",
-        "id": "7528572e-8991-4e26-876d-41d1ac76f2c1"
-      },
-      "last_edited_by": {
-        "object": "user",
-        "id": "7528572e-8991-4e26-876d-41d1ac76f2c1"
-      },
-      "cover": null,
-      "icon": null,
-      "parent": {
-        "type": "database_id",
-        "database_id": "30072e8a-beb7-810e-8173-e3785145856e"
-      },
-      "archived": false,
-      "in_trash": false,
-      "is_locked": false,
-      "properties": {
-        "date": "2024-08-25 00:00:00",
-        "tags": [
-          "教程"
-        ],
-        "permalink": "Unlimited-use-of-the-cursor/",
-        "title": "无限续杯 Cursor",
-        "updated": "2026-02-12 13:25:00"
-      },
-      "url": "https://www.notion.so/Cursor-30172e8abeb7803991dac9ce7660e091",
-      "public_url": null
-    },
-    {
-      "object": "page",
-      "id": "30172e8a-beb7-8040-a4dc-cf4ba645ec56",
-      "created_time": "2026-02-08T10:14:00.000Z",
-      "last_edited_time": "2026-02-12T03:25:00.000Z",
-      "created_by": {
-        "object": "user",
-        "id": "7528572e-8991-4e26-876d-41d1ac76f2c1"
-      },
-      "last_edited_by": {
-        "object": "user",
-        "id": "7528572e-8991-4e26-876d-41d1ac76f2c1"
-      },
-      "cover": null,
-      "icon": null,
-      "parent": {
-        "type": "database_id",
-        "database_id": "30072e8a-beb7-810e-8173-e3785145856e"
-      },
-      "archived": false,
-      "in_trash": false,
-      "is_locked": false,
-      "properties": {
-        "date": "2023-10-11 00:00:00",
-        "tags": [
-          "工具"
-        ],
-        "permalink": "Set-up-Google-Voice-to-automatically-keep-the-number/",
-        "title": "设置 Google Voice 自动保号",
-        "updated": "2026-02-12 11:25:00"
-      },
-      "url": "https://www.notion.so/Google-Voice-30172e8abeb78040a4dccf4ba645ec56",
-      "public_url": null
-    },
-    {
-      "object": "page",
       "id": "30172e8a-beb7-80a7-9f47-c172ede86f56",
       "created_time": "2026-02-08T10:14:00.000Z",
-      "last_edited_time": "2026-02-12T06:20:00.000Z",
+      "last_edited_time": "2026-02-14T06:43:00.000Z",
       "created_by": {
         "object": "user",
         "id": "7528572e-8991-4e26-876d-41d1ac76f2c1"
@@ -229,83 +42,15 @@
       "in_trash": false,
       "is_locked": false,
       "properties": {
-        "date": "2024-01-17 00:00:00",
+        "date": "2026-02-14 00:00:00",
         "tags": [
-          "工具"
+          "杂谈"
         ],
-        "permalink": "Beautify-your-GitHub-personal-homepage/",
-        "title": "美化自己的 GitHub 个人主页",
-        "updated": "2026-02-12 14:20:00"
+        "permalink": "From-xLog-to-Notion-Hexo/",
+        "title": "从 xLog 到 Notion + Hexo：折腾是为了更好地躺平",
+        "updated": "2026-02-14 14:43:00"
       },
-      "url": "https://www.notion.so/GitHub-30172e8abeb780a79f47c172ede86f56",
-      "public_url": null
-    },
-    {
-      "object": "page",
-      "id": "30172e8a-beb7-80e7-9701-c59fd4c7501c",
-      "created_time": "2026-02-08T10:11:00.000Z",
-      "last_edited_time": "2026-02-12T03:25:00.000Z",
-      "created_by": {
-        "object": "user",
-        "id": "7528572e-8991-4e26-876d-41d1ac76f2c1"
-      },
-      "last_edited_by": {
-        "object": "user",
-        "id": "7528572e-8991-4e26-876d-41d1ac76f2c1"
-      },
-      "cover": null,
-      "icon": null,
-      "parent": {
-        "type": "database_id",
-        "database_id": "30072e8a-beb7-810e-8173-e3785145856e"
-      },
-      "archived": false,
-      "in_trash": false,
-      "is_locked": false,
-      "properties": {
-        "date": "2023-04-18 00:00:00",
-        "tags": [
-          "教程"
-        ],
-        "permalink": "Deploying-your-own-ChatGPT/",
-        "title": "部署自己的 ChatGPT",
-        "updated": "2026-02-12 11:25:00"
-      },
-      "url": "https://www.notion.so/ChatGPT-30172e8abeb780e79701c59fd4c7501c",
-      "public_url": null
-    },
-    {
-      "object": "page",
-      "id": "30572e8a-beb7-80e7-a079-c1e79c79c217",
-      "created_time": "2026-02-12T09:39:00.000Z",
-      "last_edited_time": "2026-02-12T09:40:00.000Z",
-      "created_by": {
-        "object": "user",
-        "id": "7528572e-8991-4e26-876d-41d1ac76f2c1"
-      },
-      "last_edited_by": {
-        "object": "user",
-        "id": "7528572e-8991-4e26-876d-41d1ac76f2c1"
-      },
-      "cover": null,
-      "icon": null,
-      "parent": {
-        "type": "database_id",
-        "database_id": "30072e8a-beb7-810e-8173-e3785145856e"
-      },
-      "archived": false,
-      "in_trash": false,
-      "is_locked": false,
-      "properties": {
-        "date": "2026-02-12 00:00:00",
-        "tags": [
-          "工具"
-        ],
-        "permalink": "My-AI-Toolbox/",
-        "title": "我的 AI 工具箱",
-        "updated": "2026-02-12 17:40:00"
-      },
-      "url": "https://www.notion.so/AI-30572e8abeb780e7a079c1e79c79c217",
+      "url": "https://www.notion.so/xLog-Notion-Hexo-30172e8abeb780a79f47c172ede86f56",
       "public_url": null
     }
   ]
