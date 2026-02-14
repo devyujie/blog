@@ -97,3 +97,21 @@ mixin post(item)
             +postInfo(item)
             .post-content
                 != item.content
+            - var toBool = function(value) {
+            -     if (typeof value === 'boolean') return value
+            -     if (typeof value === 'number') return value !== 0
+            -     if (typeof value === 'string') {
+            -         var normalized = value.trim().toLowerCase()
+            -         if (!normalized) return false
+            -         return normalized !== 'false' && normalized !== '0' && normalized !== 'no' && normalized !== 'off'
+            -     }
+            -     return !!value
+            - }
+            - var isAi = toBool(item.ai)
+            - var isOriginal = toBool(item.original)
+            if isAi || isOriginal
+                .post-declare
+                    if isAi
+                        .post-declare-item.post-declare-ai 本文章部分内容由 AI 写作
+                    if isOriginal
+                        .post-declare-item.post-declare-original 原创声明：本文为原创内容，转载请注明出处

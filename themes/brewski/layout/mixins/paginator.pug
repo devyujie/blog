@@ -13,10 +13,11 @@ mixin home()
 mixin post()
     - var prev = page.prev ? page.prev.path : false;
     - var next = page.next ? page.next.path : false;
-    .paginator
-        if prev
-            a.prev.no-barba(href=url_for(prev))
-                != __('prev_post')
-        if next
-            a.next.no-barba(href=url_for(next))
-                != __('next_post')
+    if prev || next
+        .paginator
+            if prev
+                a.prev.no-barba(href=url_for(prev))
+                    != __('prev_post')
+            if next
+                a.next.no-barba(href=url_for(next))
+                    != __('next_post')
