@@ -2,9 +2,11 @@
 date: '2026-02-14 00:00:00'
 tags:
   - 杂谈
+ai: true
+original: true
 permalink: From-xLog-to-Notion-Hexo/
 title: 从 xLog 到 Notion + Hexo：折腾是为了更好地躺平
-updated: '2026-02-14 14:43:00'
+updated: '2026-02-14 15:01:00'
 ---
 
 程序员写博客的宿命，往往逃不过这三大阶段：搭建博客、优化主题、迁移博客。至于写文章？那大概是第四阶段的事情了。
