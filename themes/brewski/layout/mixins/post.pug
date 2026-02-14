@@ -79,14 +79,19 @@ mixin postListFlat(posts, wrap)
 
 //- Post Page
 mixin post(item)
-    .post
+    .post.post-layout
         if item.toc !== false
-            nav.post-toc
-                span.post-toc-title 文章目录
-                .post-toc-list-wrap
-                    span.post-toc-indicator
-                    ol.post-toc-list
-        article.post-block
+            aside.post-toc-region(aria-label='文章目录')
+                .post-toc-system
+                    nav.post-toc-rail(aria-label='目录缩略条')
+                        ol.post-toc-rail-list
+                    nav.post-toc-panel(aria-label='文章目录')
+                        .post-toc-panel-head
+                            span.post-toc-title 文章目录
+                        .post-toc-list-wrap
+                            span.post-toc-indicator
+                            ol.post-toc-list
+        article.post-block.post-main
             h1.post-title
                 +postTitle(item.title)
             +postInfo(item)

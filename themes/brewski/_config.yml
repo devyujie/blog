@@ -11,7 +11,7 @@ logo: /logo.svg # 网站 logo 图标路径
 copyright: # 版权信息
   since: 2026 # 博客起始年份
   name: "0x5E" # 版权拥有者名称
-  url: https://bianyujie.cn # 版权拥有者链接
+  url: https://www.bianyujie.cn # 版权拥有者链接
 
 giscus: # Giscus 评论系统配置
   enable: true # 是否启用 Giscus
@@ -32,7 +32,7 @@ live2d: # 小宠物配置
   enable: true
   once: true # 是否仅在当前会话首次加载
   script: https://cdn.jsdelivr.net/npm/live2d-widget@3.1.4/lib/L2Dwidget.min.js
-  model: https://cdn.jsdelivr.net/npm/live2d-widget-model-hijiki@1.0.5/assets/hijiki.model.json
+  model: /live2d/hijiki/hijiki.model.json
   position: left
   width: 150
   height: 300

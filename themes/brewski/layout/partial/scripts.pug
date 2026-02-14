@@ -693,21 +693,25 @@ script.
             __postTocCleanup = null
         }
 
-        var toc = document.querySelector('.post-toc')
-        if (!toc) return
+        var tocRegion = document.querySelector('.post-toc-region')
+        if (!tocRegion) return
 
-        var listWrap = toc.querySelector('.post-toc-list-wrap')
-        var indicator = toc.querySelector('.post-toc-indicator')
-        var list = toc.querySelector('.post-toc-list')
-        var content = document.querySelector('.post-content')
-        if (!listWrap || !list || !content) return
+        var tocSystem = tocRegion.querySelector('.post-toc-system')
+        var railList = tocRegion.querySelector('.post-toc-rail-list')
+        var panel = tocRegion.querySelector('.post-toc-panel')
+        var listWrap = tocRegion.querySelector('.post-toc-list-wrap')
+        var indicator = tocRegion.querySelector('.post-toc-indicator')
+        var list = tocRegion.querySelector('.post-toc-list')
+        var content = document.querySelector('.post-main .post-content') || document.querySelector('.post-content')
+        if (!tocSystem || !railList || !panel || !listWrap || !list || !content) return
 
         var headings = content.querySelectorAll('h2, h3, h4')
         if (!headings.length) {
-            toc.style.display = 'none'
+            tocRegion.style.display = 'none'
             return
         }
 
+        railList.innerHTML = ''
         list.innerHTML = ''
 
         var usedIds = {}
@@ -742,28 +746,43 @@ script.
             usedIds[id] = true
 
             var level = parseInt(heading.tagName.replace('H', ''), 10) || 2
-            var li = document.createElement('li')
-            li.className = 'post-toc-item level-' + level
+            var panelLi = document.createElement('li')
+            panelLi.className = 'post-toc-item level-' + level
 
-            var link = document.createElement('a')
-            link.className = 'post-toc-link'
-            link.href = '#' + id
-            link.textContent = text
-            link.setAttribute('data-toc-target', id)
+            var panelLink = document.createElement('a')
+            panelLink.className = 'post-toc-link'
+            panelLink.href = '#' + id
+            panelLink.textContent = text
+            panelLink.setAttribute('data-toc-target', id)
 
-            li.appendChild(link)
-            list.appendChild(li)
+            panelLi.appendChild(panelLink)
+            list.appendChild(panelLi)
+
+            var railLi = document.createElement('li')
+            railLi.className = 'post-toc-rail-item level-' + level
+
+            var railLink = document.createElement('a')
+            railLink.className = 'post-toc-rail-link'
+            railLink.href = '#' + id
+            railLink.setAttribute('data-toc-target', id)
+            railLink.setAttribute('aria-label', text)
+            railLink.setAttribute('title', text)
+
+            railLi.appendChild(railLink)
+            railList.appendChild(railLi)
 
             items.push({
                 id: id,
-                li: li,
-                link: link,
+                panelLi: panelLi,
+                panelLink: panelLink,
+                railLi: railLi,
+                railLink: railLink,
                 heading: heading
             })
         })
 
         if (!items.length) {
-            toc.style.display = 'none'
+            tocRegion.style.display = 'none'
             return
         }
 
@@ -830,14 +849,14 @@ script.
 
         var updateIndicator = function(activeItem) {
             if (!indicator || !activeItem) return
-            var offset = activeItem.li.offsetTop - list.scrollTop
+            var offset = activeItem.panelLi.offsetTop - list.scrollTop
             indicator.style.transform = 'translateY(' + offset + 'px)'
-            indicator.style.height = Math.max(activeItem.li.offsetHeight - 4, 10) + 'px'
+            indicator.style.height = Math.max(activeItem.panelLi.offsetHeight - 4, 10) + 'px'
         }
 
         var ensureVisible = function(activeItem) {
-            var top = activeItem.li.offsetTop
-            var bottom = top + activeItem.li.offsetHeight
+            var top = activeItem.panelLi.offsetTop
+            var bottom = top + activeItem.panelLi.offsetHeight
             if (top < list.scrollTop + 6) {
                 list.scrollTop = Math.max(top - 6, 0)
                 return
@@ -865,7 +884,8 @@ script.
             var active = items[activeIndex] || items[0]
 
             items.forEach(function(item) {
-                item.li.classList.toggle('is-active', item === active)
+                item.panelLi.classList.toggle('is-active', item === active)
+                item.railLi.classList.toggle('is-active', item === active)
             })
 
             ensureVisible(active)
@@ -886,17 +906,6 @@ script.
         window.addEventListener('resize', onResize)
         window.addEventListener('load', onLoad)
         window.addEventListener('hashchange', alignToHash)
-        __postTocCleanup = function() {
-            if (typeof unregisterScroll === 'function') {
-                unregisterScroll()
-            }
-            window.removeEventListener('resize', onResize)
-            window.removeEventListener('load', onLoad)
-            window.removeEventListener('hashchange', alignToHash)
-        }
-        updateActive()
-        window.setTimeout(alignToHash, 0)
-        window.setTimeout(alignToHash, 120)
 
         var contentImages = content.querySelectorAll('img')
         if (contentImages && contentImages.length) {
@@ -913,52 +922,90 @@ script.
             })
         }
 
-        var releaseForceCollapse = function() {
-            toc.classList.remove('is-force-collapsed')
+        var openPanel = function() {
+            tocSystem.classList.remove('is-panel-locked')
+            tocSystem.classList.add('is-panel-open')
         }
 
-        toc.addEventListener('mouseleave', releaseForceCollapse)
+        var closePanel = function() {
+            if (tocSystem.matches && (tocSystem.matches(':hover') || tocSystem.matches(':focus-within'))) return
+            tocSystem.classList.remove('is-panel-open')
+            tocSystem.classList.remove('is-panel-locked')
+        }
+
+        var onFocusOut = function() {
+            window.setTimeout(closePanel, 0)
+        }
+
+        tocSystem.addEventListener('mouseenter', openPanel)
+        tocSystem.addEventListener('mouseleave', closePanel)
+        tocSystem.addEventListener('focusin', openPanel)
+        tocSystem.addEventListener('focusout', onFocusOut)
+
+        var navigateToItem = function(item, event) {
+            if (event.defaultPrevented) return
+            if (event.button !== 0) return
+            if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+
+            event.preventDefault()
+
+            var headerOffset = getHeaderOffset()
+            var rect = item.heading.getBoundingClientRect()
+            var target = rect.top + (window.scrollY || document.documentElement.scrollTop || 0) - headerOffset
+            if (target < 0) target = 0
+
+            if (prefersReducedMotion) {
+                window.scrollTo(0, target)
+            } else {
+                smoothScrollTo(target, 450)
+            }
+
+            if (typeof event.detail === 'number' ? event.detail > 0 : true) {
+                if (event.currentTarget && typeof event.currentTarget.blur === 'function') {
+                    event.currentTarget.blur()
+                }
+            }
+
+            if (item.id) {
+                window.history.pushState(null, '', '#' + item.id)
+            }
+
+            var isDesktopTocMode = true
+            if (window.matchMedia) {
+                isDesktopTocMode = !window.matchMedia('(max-width: 1200px)').matches
+            }
+            if (isDesktopTocMode) {
+                // Click should collapse the panel immediately, even if pointer stays on the rail.
+                tocSystem.classList.remove('is-panel-open')
+                tocSystem.classList.add('is-panel-locked')
+            }
+        }
 
         items.forEach(function(item) {
-            item.link.addEventListener('click', function(event) {
-                if (event.defaultPrevented) return
-                if (event.button !== 0) return
-                if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
-
-                event.preventDefault()
-
-                var headerOffset = getHeaderOffset()
-                var rect = item.heading.getBoundingClientRect()
-                var target = rect.top + (window.scrollY || document.documentElement.scrollTop || 0) - headerOffset
-                if (target < 0) target = 0
-
-                if (prefersReducedMotion) {
-                    window.scrollTo(0, target)
-                } else {
-                    smoothScrollTo(target, 450)
-                }
-
-                var keepOpen = false
-                if (toc.matches) {
-                    keepOpen = toc.matches(':hover') || toc.matches(':focus-within')
-                }
-                if (!keepOpen) {
-                    toc.classList.add('is-force-collapsed')
-                } else {
-                    toc.classList.remove('is-force-collapsed')
-                }
-
-                if (typeof event.detail === 'number' ? event.detail > 0 : true) {
-                    if (item.link && typeof item.link.blur === 'function') {
-                        item.link.blur()
-                    }
-                }
-
-                if (item.id) {
-                    window.history.pushState(null, '', '#' + item.id)
-                }
+            item.panelLink.addEventListener('click', function(event) {
+                navigateToItem(item, event)
+            })
+            item.railLink.addEventListener('click', function(event) {
+                navigateToItem(item, event)
             })
         })
+
+        __postTocCleanup = function() {
+            if (typeof unregisterScroll === 'function') {
+                unregisterScroll()
+            }
+            window.removeEventListener('resize', onResize)
+            window.removeEventListener('load', onLoad)
+            window.removeEventListener('hashchange', alignToHash)
+            tocSystem.removeEventListener('mouseenter', openPanel)
+            tocSystem.removeEventListener('mouseleave', closePanel)
+            tocSystem.removeEventListener('focusin', openPanel)
+            tocSystem.removeEventListener('focusout', onFocusOut)
+        }
+
+        updateActive()
+        window.setTimeout(alignToHash, 0)
+        window.setTimeout(alignToHash, 120)
     }
 
     function initPageFeatures() {
