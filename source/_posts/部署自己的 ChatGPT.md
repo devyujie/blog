@@ -4,6 +4,6 @@ tags:
   - 教程
 permalink: Deploying-your-own-ChatGPT/
 title: 部署自己的 ChatGPT
-updated: '2026-02-12 11:25:00'
+updated: '2026-02-14 09:50:00'
 ---
-> 数据待恢复…
+
