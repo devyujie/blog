@@ -95,6 +95,10 @@ mixin post(item)
             h1.post-title
                 +postTitle(item.title)
             +postInfo(item)
+            if item.ai_summary
+                section.post-ai-summary
+                    .post-ai-summary-label AI 摘要
+                    p.post-ai-summary-content= item.ai_summary
             .post-content
                 != item.content
             - var toBool = function(value) {
@@ -109,9 +113,9 @@ mixin post(item)
             - }
             - var isAi = toBool(item.ai)
             - var isOriginal = toBool(item.original)
-            if isAi || isOriginal
+            //- if isAi || isOriginal
                 .post-declare
                     if isAi
                         .post-declare-item.post-declare-ai 本文章部分内容由 AI 润色
                     if isOriginal
-                        .post-declare-item.post-declare-original 原创声明：本文为原创内容，转载请注明出处
+                        .post-declare-item.post-declare-original 本文为独立原创，禁止任何形式未经授权的复制、抄袭、改编或转载。发现侵权行为，将依法追究责任，保留维权权利。

@@ -5,6 +5,8 @@
   "scripts": {
     "server": "hexo clean && hexo server",
     "sync:local": "elog sync --disable-cache -e .elog.env",
+    "summary:generate": "node tools/generate-ai-summaries.cjs",
+    "summary:force": "node tools/generate-ai-summaries.cjs --force",
     "build": "hexo generate",
     "clean": "hexo clean",
     "deploy": "hexo deploy",

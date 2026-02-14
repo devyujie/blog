@@ -48,6 +48,14 @@ jobs:
           npm run sync
           git status --short
 
+      - name: 生成 AI 摘要缓存
+        env:
+          ZHIPU_AI_API_KEY: ${{ secrets.ZHIPU_AI_API_KEY }}
+          ZHIPU_AI_MODEL: glm-4.7-flashx
+        run: |
+          npm run summary:generate
+          git status --short
+
       - name: 配置Git用户名邮箱
         run: |
           git config --global user.name "xxx"
