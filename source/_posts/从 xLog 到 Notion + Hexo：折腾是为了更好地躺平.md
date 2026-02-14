@@ -2,9 +2,11 @@
 date: '2026-02-14 00:00:00'
 tags:
   - 杂谈
+ai: true
+original: true
 permalink: From-xLog-to-Notion-Hexo/
 title: 从 xLog 到 Notion + Hexo：折腾是为了更好地躺平
-updated: '2026-02-14 14:43:00'
+updated: '2026-02-14 15:16:00'
 ---
 
 程序员写博客的宿命，往往逃不过这三大阶段：搭建博客、优化主题、迁移博客。至于写文章？那大概是第四阶段的事情了。
@@ -86,7 +88,7 @@ Web3 的存储号称“永存”，但在实际体验中却变成了“随缘加
 - **自动构建：** GitHub Actions 监测到变动（或定时触发），自动拉取数据并构建静态页面。
 - **秒级上线：** 2 分钟后，Vercel 自动部署，全球 CDN 同步更新。
 
-![Snipaste_2026-02-14_13-40-40.png](/images/08a7af09646486eb627284c5830b4383.png)
+![Snipaste_2026-02-14_15-15-15.png](/images/45dcdbcb742e154c281f7f0b9702974b.png)
 
 
 ### **个性化“魔改” (DIY)**

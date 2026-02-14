@@ -3,15 +3,17 @@
     {
       "id": "30172e8a-beb7-80a7-9f47-c172ede86f56",
       "doc_id": "30172e8a-beb7-80a7-9f47-c172ede86f56",
-      "updated": 1771051380000,
+      "updated": 1771053360000,
       "properties": {
         "date": "2026-02-14 00:00:00",
         "tags": [
           "杂谈"
         ],
+        "ai": true,
+        "original": true,
         "permalink": "From-xLog-to-Notion-Hexo/",
         "title": "从 xLog 到 Notion + Hexo：折腾是为了更好地躺平",
-        "updated": "2026-02-14 14:43:00"
+        "updated": "2026-02-14 15:16:00"
       },
       "realName": "从 xLog 到 Notion + Hexo：折腾是为了更好地躺平",
       "relativePath": "/从 xLog 到 Notion + Hexo：折腾是为了更好地躺平.md",
@@ -23,7 +25,7 @@
       "object": "page",
       "id": "30172e8a-beb7-80a7-9f47-c172ede86f56",
       "created_time": "2026-02-08T10:14:00.000Z",
-      "last_edited_time": "2026-02-14T06:43:00.000Z",
+      "last_edited_time": "2026-02-14T07:16:00.000Z",
       "created_by": {
         "object": "user",
         "id": "7528572e-8991-4e26-876d-41d1ac76f2c1"
@@ -46,9 +48,11 @@
         "tags": [
           "杂谈"
         ],
+        "ai": true,
+        "original": true,
         "permalink": "From-xLog-to-Notion-Hexo/",
         "title": "从 xLog 到 Notion + Hexo：折腾是为了更好地躺平",
-        "updated": "2026-02-14 14:43:00"
+        "updated": "2026-02-14 15:16:00"
       },
       "url": "https://www.notion.so/xLog-Notion-Hexo-30172e8abeb780a79f47c172ede86f56",
       "public_url": null
