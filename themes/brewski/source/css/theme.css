@@ -1394,9 +1394,10 @@ pre .strong {
   }
 
   .post-toc-list-wrap {
-    margin-top: 0.1em;
+    margin-top: 0.04em;
     max-height: none;
-    padding-left: 0.4em;
+    overflow: visible;
+    padding-left: 0.34em;
   }
 
   .post-toc-indicator {
@@ -1417,6 +1418,33 @@ pre .strong {
   }
 
   .post-toc-list {
-    max-height: 14em;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .post-toc-item {
+    margin: 0.02em 0;
+  }
+
+  .post-toc-link {
+    padding: 0.06em 0.2em 0.06em 0.22em;
+    font-size: 0.82em;
+    line-height: 1.22;
+    transition: none;
+  }
+
+  .post-toc-item.level-3 .post-toc-link {
+    padding-left: 0.62em;
+    font-size: 0.8em;
+  }
+
+  .post-toc-item.level-4 .post-toc-link {
+    padding-left: 0.9em;
+    font-size: 0.78em;
+  }
+
+  .post-toc-link:hover,
+  .post-toc-item.is-active .post-toc-link {
+    background-color: transparent;
   }
 }
