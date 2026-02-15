@@ -456,7 +456,7 @@ table tbody td :last-child {
   display: flex;
   align-items: center;
 }
-.post-block .post-info span {
+.post-block .post-info > span {
   margin-left: 0.5rem;
 }
 .post-tags {
@@ -478,6 +478,31 @@ table tbody td :last-child {
 .post-tag:hover {
   color: #801501;
   border-color: #801501;
+}
+.post-pv {
+  display: none;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: 1.8rem !important;
+  color: #bfbfbf;
+  margin-top: 0.2rem;
+  font-variant-numeric: tabular-nums;
+}
+.post-pv.is-ready {
+  display: inline-flex;
+}
+.post-pv-icon {
+  display: inline-flex;
+  align-items: center;
+}
+.post-pv-icon svg {
+  width: 0.95rem;
+  height: 0.95rem;
+  margin-top: 0.02rem;
+}
+.post-pv #vercount_value_page_pv {
+  margin-left: 0;
+  font-size: 0.9rem;
 }
 .post-block .post-info a.post-from {
   margin-left: 0.5rem;
@@ -1117,6 +1142,12 @@ pre .strong {
     margin-top: 0.3em;
     font-size: 0.8em;
     line-height: 1.75;
+  }
+  .post-pv {
+    margin-left: 1rem !important;
+  }
+  .post-pv-icon svg {
+    margin-top: 0.01rem;
   }
   .post .post-content{
     margin-top: 3em;

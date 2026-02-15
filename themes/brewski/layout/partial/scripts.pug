@@ -27,6 +27,10 @@ script.
     var __pjaxLoadingTimer = null
     var __pjaxPrefetchBound = false
     var __pjaxPrefetchInFlight = {}
+    var __vercountScriptId = 'vercount-script'
+    var __vercountScriptSrc = 'https://events.vercount.one/js'
+    var __vercountPvObserver = null
+    var __vercountPvTimers = []
 
     function shouldPrefetchPjax() {
         if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return false
@@ -45,6 +49,73 @@ script.
         }
 
         return true
+    }
+
+    function initVercount() {
+        var hasCounter = document.getElementById('vercount_value_page_pv') ||
+            document.getElementById('vercount_value_site_pv') ||
+            document.getElementById('vercount_value_site_uv')
+        if (!hasCounter) return
+
+        var existed = document.getElementById(__vercountScriptId)
+        if (existed && existed.parentNode) {
+            existed.parentNode.removeChild(existed)
+        }
+
+        var script = document.createElement('script')
+        script.id = __vercountScriptId
+        script.defer = true
+        script.src = __vercountScriptSrc
+        document.head.appendChild(script)
+    }
+
+    function clearVercountPvTimers() {
+        if (!__vercountPvTimers || !__vercountPvTimers.length) return
+        for (var i = 0; i < __vercountPvTimers.length; i += 1) {
+            window.clearTimeout(__vercountPvTimers[i])
+        }
+        __vercountPvTimers = []
+    }
+
+    function parseVercountPvValue(raw) {
+        var text = (raw || '').trim()
+        if (!text) return NaN
+        var normalized = text.replace(/,/g, '')
+        if (!/^\d+$/.test(normalized)) return NaN
+        return parseInt(normalized, 10)
+    }
+
+    function initVercountVisibility() {
+        var counter = document.getElementById('vercount_value_page_pv')
+        var container = counter ? counter.closest('.post-pv') : null
+
+        if (__vercountPvObserver && typeof __vercountPvObserver.disconnect === 'function') {
+            __vercountPvObserver.disconnect()
+            __vercountPvObserver = null
+        }
+        clearVercountPvTimers()
+
+        if (!counter || !container) return
+
+        var updateVisibility = function() {
+            var value = parseVercountPvValue(counter.textContent)
+            var hasData = Number.isFinite(value) && value > 0
+            container.classList.toggle('is-ready', hasData)
+        }
+
+        updateVisibility()
+
+        if (typeof window.MutationObserver === 'function') {
+            __vercountPvObserver = new MutationObserver(function() {
+                updateVisibility()
+            })
+            __vercountPvObserver.observe(counter, { childList: true, characterData: true, subtree: true })
+        }
+
+        var delays = [200, 600, 1200, 2000]
+        for (var i = 0; i < delays.length; i += 1) {
+            __vercountPvTimers.push(window.setTimeout(updateVisibility, delays[i]))
+        }
     }
 
     function registerScrollHandler(handler) {
@@ -1014,6 +1085,8 @@ script.
         initImagePreview()
         initPostToc()
         initHeadingAnchors()
+        initVercountVisibility()
+        initVercount()
         if (!shouldPrefetchPjax()) return
         var runWarmCache = function() {
             warmPjaxLinkCache(2)
