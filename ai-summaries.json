@@ -1,13 +1,13 @@
 {
   "version": 1,
-  "updatedAt": "2026-02-14T16:25:32.643Z",
+  "updatedAt": "2026-02-14T17:08:49.076Z",
   "items": {
     "_posts/从 xLog 到 Notion + Hexo：折腾是为了更好地躺平.md": {
       "title": "从 xLog 到 Notion + Hexo：折腾是为了更好地躺平",
-      "hash": "0f8c6a15657311246ffd8db20a2f74fb3f7541fe",
-      "summary": "作者因 xLog 平台服务不稳定导致数据丢失，痛定思痛将博客迁移至 Notion + Hexo + GitHub Actions + Vercel 组合。该方案通过 Notion 作为 Headless CMS 提供丝滑写作体验，利用 GitHub Actions 实现云端自动化构建，并借助 Vercel 获得全球 CDN 加速。尽管迁移导致旧文截图丢失，但新架构实现了极简发布与极致性能，作者认为这种鲁棒且高效的方案才是折腾的终点。",
+      "hash": "e37ebac748ec8217a765c58597e74b45f96ead97",
+      "summary": "作者因 xLog 平台服务不稳定导致数据丢失，痛定思痛将博客迁移至 Notion + Hexo + GitHub Actions + Vercel 组合。利用 Notion 作为 Headless CMS 提供顺滑写作体验，通过自动化流程实现云端一键发布。作者基于开源模板二次开发，解决了图片存储问题，并集成了 AI 摘要、侧边栏及评论系统，最终实现了极简发布与高性能优化的完美平衡。",
       "model": "glm-4.7-flashx",
-      "generatedAt": "2026-02-14T16:25:32.377Z"
+      "generatedAt": "2026-02-14T17:08:48.825Z"
     }
   }
 }
