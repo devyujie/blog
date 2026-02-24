@@ -125,7 +125,8 @@ body.zoom-preview-open .site-header {
   pointer-events: none;
 }
 
-body.zoom-preview-open .back-to-top {
+body.zoom-preview-open .back-to-top,
+body.zoom-preview-open .scroll-to-comment {
   opacity: 0 !important;
   visibility: hidden !important;
   pointer-events: none;
@@ -1072,10 +1073,10 @@ pre .strong {
   font-weight: 600;
 }
 
-.back-to-top {
+.back-to-top,
+.scroll-to-comment {
   position: fixed;
   right: 2em;
-  bottom: 4em;
   width: 42px;
   height: 42px;
   border: 0;
@@ -1084,6 +1085,9 @@ pre .strong {
   color: #fff;
   font-size: 20px;
   line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   opacity: 0;
   visibility: hidden;
@@ -1096,24 +1100,43 @@ pre .strong {
   z-index: 999;
 }
 
-.back-to-top.show {
+.back-to-top {
+  bottom: 4em;
+}
+
+.scroll-to-comment {
+  bottom: 7.2em;
+}
+
+.back-to-top.show,
+.scroll-to-comment.show {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
 }
 
-.back-to-top:hover {
+.back-to-top:hover,
+.scroll-to-comment:hover {
   background: #801501;
 }
 
-.back-to-top:active {
+.back-to-top:active,
+.scroll-to-comment:active {
   transform: translateY(1px);
 }
 
 @media screen and (max-width: 700px) {
-  .back-to-top {
+  .back-to-top,
+  .scroll-to-comment {
     right: 1.5em;
+  }
+
+  .back-to-top {
     bottom: 3.5em;
+  }
+
+  .scroll-to-comment {
+    display: none;
   }
 }
 

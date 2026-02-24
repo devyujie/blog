@@ -425,6 +425,44 @@ script.
         button.__toggleBackToTop()
     }
 
+    function scrollToComments() {
+        var container = document.getElementById('giscus-container')
+        if (!container) return false
+
+        var header = document.querySelector('.site-header')
+        var offset = header ? header.getBoundingClientRect().height : 0
+        var scrollTop = window.scrollY || document.documentElement.scrollTop || 0
+        var top = container.getBoundingClientRect().top + scrollTop - offset - 12
+        window.scrollTo(0, Math.max(0, Math.round(top)))
+        return true
+    }
+
+    function initScrollToComment() {
+        var button = document.getElementById('scroll-to-comment')
+        if (!button) return
+
+        if (button.__scrollToCommentBound && typeof button.__toggleScrollToComment === 'function') {
+            button.__toggleScrollToComment()
+            return
+        }
+
+        button.__toggleScrollToComment = function() {
+            var hasComment = !!document.getElementById('giscus-container')
+            if (hasComment) {
+                button.classList.add('show')
+            } else {
+                button.classList.remove('show')
+            }
+        }
+
+        button.addEventListener('click', function() {
+            scrollToComments()
+        })
+
+        button.__scrollToCommentBound = true
+        button.__toggleScrollToComment()
+    }
+
     function initLogoScrollTop() {
         var logoLink = document.querySelector('.site-header .branding a')
         if (!logoLink || logoLink.__logoTopBound) return
@@ -1081,6 +1119,7 @@ script.
 
     function initPageFeatures() {
         updateNavActiveState()
+        initScrollToComment()
         initGiscusLazy()
         initImagePreview()
         initPostToc()
