@@ -55,7 +55,7 @@ Notion(状态=已发布)
   -> Vercel 部署上线
 ```
 
-## 5. 本地开发
+## 5. 本地开发调试
 
 ### 5.1 环境要求
 
@@ -70,7 +70,7 @@ npm i
 
 ### 5.3 配置环境变量（本地）
 
-在仓库根目录创建或维护 `.elog.env`（该文件已在 `.gitignore` 中）：
+在仓库根目录创建或维护 `.elog.env`（此文件不会被提交到远程仓库，可放心）：
 
 ```env
 NOTION_TOKEN=your_notion_token
@@ -91,20 +91,30 @@ ZHIPU_AI_API_KEY=your_zhipu_key
 - `ZHIPU_AI_MAX_INPUT_CHARS`：默认 `12000`
 - `ZHIPU_AI_MAX_OUTPUT_TOKENS`：默认 `240`
 
-## 6. 常用命令
+### 5.4 运行
+
+```bash
+# 从 Notion 拉取文章到本地
+npm run sync:local
+
+# 启动本地预览
+npm run server
+```
+
+### 5.5 命令解释
 
 | 命令 | 作用 |
 | --- | --- |
-| `npm run sync:local` | 使用 `.elog.env` 从 Notion 拉取文章到本地 |
+| `npm run server` | 清理并`启动本地预览` |
+| `npm run sync:local` | 从 Notion 拉取文章到本地 |
 | `npm run summary:generate` | 增量生成摘要（按哈希复用缓存） |
 | `npm run summary:force` | 强制重算全部摘要（忽略缓存） |
-| `npm run server` | 清理并启动本地预览 |
 | `npm run build` | 生成静态文件到 `public/` |
 | `npm run clean` | 清理 Hexo 缓存与构建产物 |
 | `npm run sync` | CI 使用的同步命令（不带 `.elog.env` 参数） |
 | `npm run elog:clean` | 清空 Elog 同步内容 |
 
-## 7. Elog 同步规则（当前实现）
+## 6. Elog 同步规则
 
 `elog.config.js` 关键策略：
 
@@ -121,66 +131,49 @@ ZHIPU_AI_API_KEY=your_zhipu_key
   - `original`：是否为原创文章（布尔值）
 - 图片导出到 `source/images`，并用 `/images` 前缀引用
 
-## 8. AI 摘要系统
+## 7. AI 摘要系统
 
-### 8.1 组成
+### 7.1 组成
 
 - 提示词：`docs/ai-summary-prompt.md`
 - 生成脚本：`tools/generate-ai-summaries.cjs`
 - 缓存文件：`ai-summaries.json`
 - 渲染注入：`scripts/ai-summary-loader.js`
 
-### 8.2 机制
+### 7.2 机制
 
 - 每篇文章会计算 `title + 正文文本` 的 SHA1 哈希
 - 哈希不变时，`summary:generate` 直接复用缓存
 - 文章变化时，只重算对应文章摘要
 - 删除文章时，会清理缓存里的孤儿项
-- `summary:force` 无视哈希，强制全量重算
+- 使用 `npm run summary:force` 时，会无视哈希，强制全量重算
 
-### 8.3 渲染行为
+### 7.3 渲染行为
 
 - Hexo 在渲染前读取 `ai-summaries.json`
 - 自动把摘要注入到文章对象 `ai_summary`
 - 主题在文章标题下方渲染 `AI 摘要` 区块
 
-## 9. GitHub Actions 自动化
+## 8. GitHub Actions 自动化
 
 工作流文件：`.github/workflows/sync.yaml`
 
 触发方式：
 
-- 定时：`cron: 0 0 * * *`（UTC，每天一次）
-- 手动：`workflow_dispatch`
+- 定时自动触发：`cron: 0 0 * * *`（UTC，每天一次）
+- 手动触发：`workflow_dispatch`（在 GitHub 仓库的 Actions 页面点击 "Run workflow" 按钮）
 
-主要步骤：
-
-1. checkout 代码
-2. 安装 Node 20 + 依赖
-3. 执行 `npm run elog:clean`
-4. 执行 `npm run sync` 拉取 Notion 内容
-5. 执行 `npm run summary:generate` 生成/更新摘要缓存
-6. 自动提交并推送变更
-
-CI 所需 GitHub Secrets：
+CI 所需的 GitHub Secrets（在仓库的 Settings -> Secrets and variables -> Actions 中添加，和 5.3 步骤中的参数一致）：
 
 - `NOTION_TOKEN`
 - `NOTION_DATABASE_ID`
 - `ZHIPU_AI_API_KEY`
 
-## 10. 部署说明（Vercel）
-
-`vercel.json` 当前配置主要为：
-
-- 为 `/rss.xml` 设置 `application/rss+xml; charset=utf-8`
-- 为 `/sitemap.xml` 设置 `application/xml; charset=utf-8`
-
-## 11. 常见问题
+## 9. 常见问题
 
 ### Q1：摘要脚本提示未设置 `ZHIPU_AI_API_KEY`
 
-- 先确认根目录存在 `.elog.env` 且变量名拼写正确
-- 脚本会自动读取 `.elog.env`，也可直接在系统环境变量里设置
+- 确认你已经在 `.elog.env` 和 GitHub Secrets 中配置了 `ZHIPU_AI_API_KEY`
 
 ### Q2：为什么 `summary:generate` 没有新生成？
 
@@ -190,8 +183,13 @@ CI 所需 GitHub Secrets：
 ### Q3：Notion 文章没有同步下来
 
 - 检查 Notion 页面状态是否为 `已发布`
-- 检查集成权限是否覆盖到目标 Database
 - 检查 `.elog.env` 中 `NOTION_TOKEN` / `NOTION_DATABASE_ID` 是否正确
+
+## 10. 注意事项
+
+- 本地开发调试时，确保 `.elog.env` 文件存在且内容正确
+- 线上部署时，确保 GitHub Secrets 中已添加对应变量（与 `.elog.env` 中的变量一致）
+- Notion 文章中，状态确保为 `已发布`
 
 ---
 
