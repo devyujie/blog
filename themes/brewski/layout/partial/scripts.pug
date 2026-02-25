@@ -11,6 +11,9 @@ if theme.google_analytics
             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
         })();
 
+script(src='https://unpkg.com/@popperjs/core@2')
+script(src='https://unpkg.com/tippy.js@6')
+
 script.
     var __scrollHandlers = []
     var __scrollListenerBound = false
@@ -31,6 +34,7 @@ script.
     var __vercountScriptSrc = 'https://events.vercount.one/js'
     var __vercountPvObserver = null
     var __vercountPvTimers = []
+    var __declareTooltipInstances = []
 
     function shouldPrefetchPjax() {
         if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return false
@@ -116,6 +120,40 @@ script.
         for (var i = 0; i < delays.length; i += 1) {
             __vercountPvTimers.push(window.setTimeout(updateVisibility, delays[i]))
         }
+    }
+
+    function destroyDeclareTooltips() {
+        if (!__declareTooltipInstances || !__declareTooltipInstances.length) return
+        for (var i = 0; i < __declareTooltipInstances.length; i += 1) {
+            var instance = __declareTooltipInstances[i]
+            if (instance && typeof instance.destroy === 'function') {
+                instance.destroy()
+            }
+        }
+        __declareTooltipInstances = []
+    }
+
+    function initDeclareTooltips() {
+        destroyDeclareTooltips()
+        if (typeof window.tippy !== 'function') return
+        var targets = document.querySelectorAll('.post-declare-badge[data-declare-tooltip]')
+        if (!targets || !targets.length) return
+
+        var instances = window.tippy(targets, {
+            theme: 'post-declare',
+            placement: 'top',
+            maxWidth: 240,
+            delay: [0, 0],
+            content: function(reference) {
+                return reference.getAttribute('data-declare-tooltip') || ''
+            }
+        })
+
+        if (Array.isArray(instances)) {
+            __declareTooltipInstances = instances
+            return
+        }
+        __declareTooltipInstances = instances ? [instances] : []
     }
 
     function registerScrollHandler(handler) {
@@ -1119,6 +1157,7 @@ script.
 
     function initPageFeatures() {
         updateNavActiveState()
+        initDeclareTooltips()
         initScrollToComment()
         initGiscusLazy()
         initImagePreview()
@@ -1183,6 +1222,8 @@ script.
         var currentRoot = document.getElementById('swup')
         var nextRoot = nextDoc.getElementById('swup')
         if (!currentRoot || !nextRoot) return false
+
+        destroyDeclareTooltips()
 
         if (typeof __postTocCleanup === 'function') {
             __postTocCleanup()

@@ -1,7 +1,35 @@
+-
+    var toBool = function(value) {
+        if (typeof value === 'boolean') return value
+        if (typeof value === 'number') return value !== 0
+        if (typeof value === 'string') {
+            var normalized = value.trim().toLowerCase()
+            if (!normalized) return false
+            return normalized !== 'false' && normalized !== '0' && normalized !== 'no' && normalized !== 'off'
+        }
+        return !!value
+    }
+
 mixin postInfo(item)
+    - var isAi = toBool(item.ai)
+    - var isOriginal = toBool(item.original)
     .post-info
-        a
-        != full_date(item.date, config.datetime_format || 'YYYY-MM-DD')
+        if is_post() && (isOriginal || isAi)
+            span.post-declare-badges
+                if isOriginal
+                    span.post-declare-badge.post-declare-badge-original(
+                        tabindex='0'
+                        aria-label='原创声明'
+                        data-declare-tooltip='本文为独立原创，禁止任何形式未经授权的复制、抄袭、改编或转载。'
+                    ) 原创
+                if isAi
+                    span.post-declare-badge.post-declare-badge-ai(
+                        tabindex='0'
+                        aria-label='AI 润色声明'
+                        data-declare-tooltip='本文章部分内容由 AI 润色'
+                    ) AI润色
+        span.post-date
+            != full_date(item.date, config.datetime_format || 'YYYY-MM-DD')
         if item.tags && item.tags.length && (is_home() || is_post())
             span.post-tags
                 - item.tags.each(function(tag) {
@@ -106,21 +134,3 @@ mixin post(item)
                     p.post-ai-summary-content= item.ai_summary
             .post-content
                 != item.content
-            - var toBool = function(value) {
-            -     if (typeof value === 'boolean') return value
-            -     if (typeof value === 'number') return value !== 0
-            -     if (typeof value === 'string') {
-            -         var normalized = value.trim().toLowerCase()
-            -         if (!normalized) return false
-            -         return normalized !== 'false' && normalized !== '0' && normalized !== 'no' && normalized !== 'off'
-            -     }
-            -     return !!value
-            - }
-            - var isAi = toBool(item.ai)
-            - var isOriginal = toBool(item.original)
-            //- if isAi || isOriginal
-                .post-declare
-                    if isAi
-                        .post-declare-item.post-declare-ai 本文章部分内容由 AI 润色
-                    if isOriginal
-                        .post-declare-item.post-declare-original 本文为独立原创，禁止任何形式未经授权的复制、抄袭、改编或转载。发现侵权行为，将依法追究责任，保留维权权利。

@@ -235,9 +235,6 @@ video {
   margin: 1rem auto;
 }
 
-/*table {
-  padding: 0;
-}*/
 table th {
   font-weight: 600;
   border: 0;
@@ -314,7 +311,6 @@ table tbody td :last-child {
 
 .archive {
   margin: 0.45em 0 2.5em;
-  /* padding: 0 1.5em 0 2em; */
 }
 
 .archive-year {
@@ -435,7 +431,6 @@ table tbody td :last-child {
 .archive .post-title-link:hover {
   border-bottom: 0;
   color: #9e1900;
-  /* text-decoration: underline; */
 }
 .archive .post-info {
   font-size: 0.8em;
@@ -456,9 +451,40 @@ table tbody td :last-child {
   margin: 1.2em 0;
   display: flex;
   align-items: center;
+  align-content: center;
+  line-height: 1;
 }
-.post-block .post-info > span {
-  margin-left: 0.5rem;
+.post-declare-badges {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  margin-left: 0 !important;
+  margin-right: 0.68rem;
+}
+.post-declare-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.16rem 0.52rem;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  line-height: 1.2;
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: help;
+  user-select: none;
+  white-space: nowrap;
+  word-break: keep-all;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+.post-declare-badge:hover {
+  box-shadow: 0 6px 12px rgba(34, 40, 49, 0.06);
+}
+.post-declare-badge-original,.post-declare-badge-ai {
+  color: #bfbfbf;
+  font-weight: normal;
+  border: 1px solid #e0e0e0;
+  background: #fff;
 }
 .post-tags {
   display: inline-flex;
@@ -471,23 +497,25 @@ table tbody td :last-child {
   align-content: center;
   color: #bfbfbf;
   font-size: 0.9rem;
-  /* padding: 0 3px; */
   text-decoration: none;
-  margin-top: 0.2rem;
-  /* border: 1px dashed #bfbfbf; */
+  white-space: nowrap;
 }
 .post-tag:hover {
   color: #801501;
   border-color: #801501;
 }
+.post-date{
+  user-select: none;
+  white-space: nowrap;
+}
 .post-pv {
   display: none;
   align-items: center;
-  gap: 0.3rem;
-  margin-left: 1.8rem !important;
+  gap: 0.1rem;
+  margin-left: 1.6rem !important;
   color: #bfbfbf;
-  margin-top: 0.2rem;
   font-variant-numeric: tabular-nums;
+  user-select: none;
 }
 .post-pv.is-ready {
   display: inline-flex;
@@ -544,7 +572,6 @@ table tbody td :last-child {
   margin-bottom: 1em;
 }
 
-/* inline heading anchors */
 .post-content .header-anchor,
 .post-content .headerlink {
   display: inline-block;
@@ -672,24 +699,39 @@ a {
 }
 
 .post-declare-item {
-  /* padding: 0.36em 0.82em; */
-  /* border-radius: 999px; */
   font-size: 0.7em;
-  color: #999;
-  text-align: center;
+  color: #c4c4c4;
   width: 100%;
+  text-align: left;
 }
 
-.post-declare-ai {
-  /* color: #7d4700;
-  background: rgba(255, 216, 157, 0.3);
-  border: 1px solid rgba(191, 128, 0, 0.25); */
+.tippy-box[data-theme~='post-declare'] {
+  color: #f4f7fc;
+  background: #1f242c;
+  border-radius: 10px;
+  box-shadow: 0 10px 22px rgba(31, 36, 44, 0.3);
 }
 
-.post-declare-original {
-  /* color: #9e1900;
-  background: rgba(158, 25, 0, 0.06);
-  border: 1px solid rgba(158, 25, 0, 0.2); */
+.tippy-box[data-theme~='post-declare'] .tippy-content {
+  padding: 0.5rem 0.72rem;
+  font-size: 0.78rem;
+  line-height: 1.58;
+}
+
+.tippy-box[data-theme~='post-declare'][data-placement^='top'] > .tippy-arrow::before {
+  border-top-color: #1f242c;
+}
+
+.tippy-box[data-theme~='post-declare'][data-placement^='bottom'] > .tippy-arrow::before {
+  border-bottom-color: #1f242c;
+}
+
+.tippy-box[data-theme~='post-declare'][data-placement^='left'] > .tippy-arrow::before {
+  border-left-color: #1f242c;
+}
+
+.tippy-box[data-theme~='post-declare'][data-placement^='right'] > .tippy-arrow::before {
+  border-right-color: #1f242c;
 }
 
 #mask {
@@ -761,7 +803,6 @@ footer .copyright {
 }
 footer .copyright p,
 footer .copyright a {
-  /* padding: 1em 0; */
   color: #393e46;
   font-weight: 300;
 }
@@ -779,8 +820,6 @@ pre {
 .highlight {
   position: relative;
   margin: 1em 0;
-  /* border-radius: 0.02em; */
-  /* line-height: 1.1em; */
   background-color: #f8f8f8;
   max-width: 100%;
   overflow: hidden;
@@ -1152,8 +1191,15 @@ pre .strong {
   max-width: 100%;
 }
 
-/* 适配常见机型移动端样式 */
 @media screen and (max-width: 700px) {
+  .post-main .post-info {
+    flex-wrap: wrap;
+    gap: 0.38rem 0.52rem;
+    line-height: 1;
+  }
+  .post-main .post-date {
+    white-space: nowrap;
+  }
   .post-toc-region {
     display: none;
   }
@@ -1168,6 +1214,17 @@ pre .strong {
   }
   .post-pv {
     margin-left: 1rem !important;
+  }
+  .post-main .post-pv {
+    margin-left: auto !important;
+  }
+  .post-main .post-declare-badges {
+    margin-right: 0.24rem;
+    gap: 0.26rem;
+  }
+  .post-main .post-declare-badge {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.44rem;
   }
   .post-pv-icon svg {
     margin-top: 0.01rem;
@@ -1187,11 +1244,9 @@ pre .strong {
   .archive-group:hover .archive-year {
     color: rgba(34, 40, 49, 0.09);
   }
-  /* .tag-archive .archive-year {
-    font-size: clamp(3.2rem, 12vw, 6.5rem);
-  } */
-  .post-tags {
-    margin-left: 1rem !important;
+  .post-main .post-tags {
+    margin-left: 0 !important;
+    gap: 0.36rem;
   }
   .post-block .post-title {
     font-size: 1.8em;
@@ -1243,7 +1298,6 @@ pre .strong {
     color: #999;
   }
   .archive-year {
-    /* 控制年份字体大小在7rem到12rem之间，响应式缩放，最大18vw */
     font-size: clamp(6rem, 18vw, 11rem);
   }
 }
@@ -1261,7 +1315,6 @@ pre .strong {
   font-size: 0.88rem;
 }
 
-/* TOC system: rail and panel are two independent structures */
 .post-toc-system {
   position: relative;
   display: flex;
