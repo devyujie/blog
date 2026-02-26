@@ -26,7 +26,7 @@ giscus: # Giscus 评论系统配置
   input_position: top # 输入框位置
   theme: preferred_color_scheme # 主题
   lang: zh-CN # 语言
-  loading: lazy # 加载方式
+  loading: eager # 加载方式
 
 live2d: # 小宠物配置
   enable: true
