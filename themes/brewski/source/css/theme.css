@@ -1484,12 +1484,28 @@ pre .strong {
 }
 
 #live2d-widget {
+  visibility: hidden;
   opacity: 0;
+  width: var(--live2d-widget-width, 150px) !important;
+  height: var(--live2d-widget-height, 300px) !important;
+  max-width: var(--live2d-widget-width, 150px) !important;
+  max-height: var(--live2d-widget-height, 300px) !important;
+  overflow: hidden;
+  contain: layout paint size;
   transition: opacity 0.32s ease-out;
 }
 
 #live2d-widget.live2d-ready {
+  visibility: visible;
   opacity: 1;
+}
+
+#live2d-widget canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
