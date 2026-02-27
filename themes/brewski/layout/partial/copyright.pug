@@ -3,4 +3,18 @@
     - var currentYear = currentDate.getFullYear();
     - var copyrightURL = theme.copyright.url
     - var copyrightName = theme.copyright.name
-    p.copyright-footer &copy; #{currentYear} #[a.name(href=copyrightURL) #{copyrightName}] #[a.x(href='https://x.com/yj_bian') #[img(src="/X_logo.svg" alt="rss" width="12" height="12")]] #[a.github(href='https://github.com/devyujie') #[img(src="/Github_logo.svg" alt="rss" width="15" height="15")]] #[a.rss(href='/rss.xml' target="_blank") #[img(src="/rss.svg" alt="rss" width="15" height="15")]]
+    p.copyright-footer
+        | &copy; #{currentYear}
+        a.name(href=copyrightURL) #{copyrightName}
+        a.x(href='https://x.com/yj_bian')
+            img(src='/X_logo.svg' alt='x' width='12' height='12')
+        a.github(href='https://github.com/devyujie')
+            img(src='/Github_logo.svg' alt='github' width='15' height='15')
+        a.wechat.wx-tooltip-trigger(
+            href='javascript:void(0)'
+            aria-label='微信公众号二维码'
+            data-wx-qrcode='/wx_qrcode.jpg'
+        )
+            img(src='/wx_logo.svg' alt='wechat' width='16' height='16')
+        a.rss(href='/rss.xml' target='_blank')
+            img(src='/rss.svg' alt='rss' width='14' height='14')

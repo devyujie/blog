@@ -35,6 +35,7 @@ script.
     var __vercountPvObserver = null
     var __vercountPvTimers = []
     var __declareTooltipInstances = []
+    var __wxQrcodeTooltipInstances = []
 
     function shouldPrefetchPjax() {
         if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return false
@@ -154,6 +155,48 @@ script.
             return
         }
         __declareTooltipInstances = instances ? [instances] : []
+    }
+
+    function destroyWxQrcodeTooltips() {
+        if (!__wxQrcodeTooltipInstances || !__wxQrcodeTooltipInstances.length) return
+        for (var i = 0; i < __wxQrcodeTooltipInstances.length; i += 1) {
+            var instance = __wxQrcodeTooltipInstances[i]
+            if (instance && typeof instance.destroy === 'function') {
+                instance.destroy()
+            }
+        }
+        __wxQrcodeTooltipInstances = []
+    }
+
+    function initWxQrcodeTooltips() {
+        destroyWxQrcodeTooltips()
+        if (typeof window.tippy !== 'function') return
+        var targets = document.querySelectorAll('.wx-tooltip-trigger[data-wx-qrcode]')
+        if (!targets || !targets.length) return
+
+        var instances = window.tippy(targets, {
+            theme: 'wx-qrcode',
+            placement: 'top',
+            delay: [0, 0],
+            maxWidth: 'none',
+            interactive: true,
+            content: function(reference) {
+                var src = reference.getAttribute('data-wx-qrcode') || ''
+                if (!src) return ''
+                var image = document.createElement('img')
+                image.src = src
+                image.alt = '微信公众号二维码'
+                image.loading = 'lazy'
+                image.className = 'wx-qrcode-tooltip-image'
+                return image
+            }
+        })
+
+        if (Array.isArray(instances)) {
+            __wxQrcodeTooltipInstances = instances
+            return
+        }
+        __wxQrcodeTooltipInstances = instances ? [instances] : []
     }
 
     function registerScrollHandler(handler) {
@@ -1212,6 +1255,7 @@ script.
     function initPageFeatures() {
         updateNavActiveState()
         initDeclareTooltips()
+        initWxQrcodeTooltips()
         initScrollToComment()
         initGiscus()
         initImagePreview()
@@ -1278,6 +1322,7 @@ script.
         if (!currentRoot || !nextRoot) return false
 
         destroyDeclareTooltips()
+        destroyWxQrcodeTooltips()
 
         if (typeof __postTocCleanup === 'function') {
             __postTocCleanup()
