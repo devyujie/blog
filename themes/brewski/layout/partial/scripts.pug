@@ -36,7 +36,6 @@ script.
     var __vercountPvTimers = []
     var __declareTooltipInstances = []
     var __wxQrcodeTooltipInstances = []
-    var __siteCanonicalUrl = '#{config.url || ""}'
 
     function shouldPrefetchPjax() {
         if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return false
@@ -57,23 +56,11 @@ script.
         return true
     }
 
-    function isCanonicalHostVisit() {
-        if (!__siteCanonicalUrl) return true
-        try {
-            var canonicalHost = new URL(__siteCanonicalUrl).host
-            if (!canonicalHost) return true
-            return canonicalHost === window.location.host
-        } catch (err) {
-            return true
-        }
-    }
-
     function initVercount() {
         var hasCounter = document.getElementById('vercount_value_page_pv') ||
             document.getElementById('vercount_value_site_pv') ||
             document.getElementById('vercount_value_site_uv')
         if (!hasCounter) return
-        if (!isCanonicalHostVisit()) return
 
         var existed = document.getElementById(__vercountScriptId)
         if (existed && existed.parentNode) {
