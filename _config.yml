@@ -5,7 +5,7 @@ language: zh-CN # 语言
 timezone: Asia/Shanghai # 时区
 author: "0x5E" # 作者
 
-url: https://bianyujie.cn # 你的站点地址（请保持和线上域名一致）
+url: https://www.bianyujie.cn # 你的站点地址（请保持和线上域名一致）
 root: / # 子目录部署时改成 /子目录/
 
 permalink: :title/ # 设置文章固定链接格式，这里为文章标题
