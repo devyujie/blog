@@ -41,6 +41,7 @@
         "database_id": "30072e8a-beb7-810e-8173-e3785145856e"
       },
       "in_trash": false,
+      "is_archived": false,
       "is_locked": false,
       "properties": {
         "date": "2026-02-14 00:00:00",
