@@ -40,8 +40,8 @@
         "type": "database_id",
         "database_id": "30072e8a-beb7-810e-8173-e3785145856e"
       },
-      "archived": false,
       "in_trash": false,
+      "is_archived": false,
       "is_locked": false,
       "properties": {
         "date": "2026-02-14 00:00:00",
@@ -54,8 +54,9 @@
         "title": "从 xLog 到 Notion + Hexo：折腾是为了更好地躺平",
         "updated": "2026-02-27 11:30:00"
       },
-      "url": "https://www.notion.so/xLog-Notion-Hexo-30172e8abeb780a79f47c172ede86f56",
-      "public_url": null
+      "url": "https://app.notion.com/p/xLog-Notion-Hexo-30172e8abeb780a79f47c172ede86f56",
+      "public_url": null,
+      "archived": false
     }
   ]
 }
